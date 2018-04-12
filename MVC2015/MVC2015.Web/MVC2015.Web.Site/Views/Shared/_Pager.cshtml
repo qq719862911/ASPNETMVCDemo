@@ -1,0 +1,98 @@
+﻿@using MVC2015.Web.Model.Common;
+@using MVC2015.Web;
+@using MVC2015.Utility.Resource;
+@model IPager
+@if (Model.RecordCount > 0)
+{
+    int totalPage = Model.TotalPage;
+    string classTemplate = " class=\"{0}\"";
+    string onClickTemplate = " onclick=\"setPageIndex(this, {0})\"";
+    string prevClass = string.Empty;
+    string nextClass = string.Empty;
+    int nextPage = Model.PageNum + 1;
+    int prePage = Model.PageNum - 1;
+    //如果当前页大于总页数,那么当前页取最大页
+    if (Model.PageNum >= totalPage)
+    {
+        Model.PageNum = totalPage;
+    }
+    //如果当前页小于1,那么当前页取1
+    if (Model.PageNum <= 1)
+    {
+        Model.PageNum = 1;
+    }
+    //if totalPage count less then page's defined page item count, then only show page buttons by totalPage
+    var itemNums = Model.PagerItemCount <= totalPage ? Model.PagerItemCount : totalPage;
+    int halfNums = Model.PagerItemCount / 2;
+    //according current PageNum, to get left and right number count
+    int startNum = Model.PageNum - halfNums;
+    int endNum = Model.PageNum + halfNums;
+    //if pageNum less then half Number, then start from 1
+    if (Model.PageNum <= halfNums)
+    {
+        startNum = 1;
+        endNum = startNum + (itemNums - 1);
+    }
+    //if pageNum + half number lager then total page, then end with last page.
+    if ((Model.PageNum + halfNums) >= totalPage)
+    {
+        endNum = totalPage;
+        startNum = totalPage - (itemNums - 1);
+    }
+    <div style="float: right;">
+        <ul class="pagination pagination-right" style="float: right;">
+            @*means first page, then Prev button need disable*@
+            @if (Model.PageNum == 1)
+            {
+                prevClass = String.Format(classTemplate, "disabled");
+            }
+            else
+            {
+                prevClass = string.Format(onClickTemplate, prePage);
+            }
+            <li @Html.Raw(prevClass)><a href="javascript:void(0);">上一页</a></li>
+            @for (int i = startNum; i <= endNum; i++)
+            {
+                var liClass = string.Empty;
+                if (Model.PageNum == i) { liClass = string.Format(classTemplate, "active"); }
+                else
+                {
+                    liClass = string.Format(onClickTemplate, i);
+                }
+                <li @Html.Raw(liClass)><a href="javascript:void(0);">@i.ToString()</a></li>
+            }
+            @*means final page, then Next button need disable*@
+            @if (Model.PageNum == totalPage)
+            {
+                nextClass = String.Format(classTemplate, "disabled");
+            }
+            else
+            {
+                nextClass = string.Format(onClickTemplate, nextPage);
+            }
+            <li @Html.Raw(nextClass)><a href="javascript:void(0);">下一页</a></li>
+        </ul>
+    </div>
+    <div style="clear: both;"></div>
+}
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+         function setPageIndex(btn, index) {
+             //$("#form-search").submit();
+             //            getPageData(index);
+             try {
+                 $("#PageNum").val(index);
+                 refreshPage(index);
+             }
+             catch (e) {
+                 var gridDiv = $(btn).parents("div[data-element^=grid]");
+                 var gridIdentity = gridDiv.attr("data-element");
+                 var identity = gridIdentity.split("-")[1];
+                 var searchIdentity = "search-" + identity;
+                 $("[data-element=" + searchIdentity + "] #PageNum").val(index);
+                 refreshGrid(index, identity);
+                 pageIndex = index;
+             }
+         }
+    </script>
+    )

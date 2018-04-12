@@ -1,0 +1,109 @@
+﻿@using MVC2015.Web;
+@using MVC2015.Utility.Resource;
+@using VM = MVC2015.Web.Model.SystemMaint;
+@model VM.RoleInfo.RoleInfoItem
+
+@{
+    ViewBag.Title = ResourceHelper.GetValue("SM_RoleInfo_Add");
+}
+
+<style type="text/css">
+    .role-table input[type="button"]:hover,
+    .role-table input[type="button"]:focus {
+        font-size: inherit;
+    }
+</style>
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_RoleInfo_Add")
+    </h2>
+</div>
+
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_RoleInfo_PageTitle")
+    </div>
+</div>
+<div class="titlemenu">
+    <input type="button" value="@ResourceHelper.GetValue("Common_Button_Save")" id="btnSave" />
+    <a href="@Url.Action("Index", "RoleInfo")" class="abtn">@ResourceHelper.GetValue("Common_Button_Return")</a>
+</div>
+@using (@Html.Form("Create", "RoleInfo", new { RoleId = Model.RoleId }, System.Web.Mvc.FormMethod.Post, new { id = "RoleForm" }))
+{
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_RoleInfo_RoleName")：@Html.HiddenFor(m => m.RoleId)
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.Name, new { @class = "field-input" })
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_RoleInfo_RoleDescription")：
+        </div>
+        <div class="col-md-5 field-content">
+            @Html.TextAreaFor(m => m.Description, new { @class = "field-input", rows = 2, cols = 100, maxlength = 200 })
+        </div>
+    </div>
+
+
+    <div class="row section-head">
+        <div class="section-title">
+            @ResourceHelper.GetValue("SM_RoleInfo_Permission")
+        </div>
+    </div>
+    Html.RenderAction("MoulePermission");
+    <div class="row">
+        @Html.ValidationSummary()
+    </div>
+
+}
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        function gotourl() {
+            location.href = "@Url.Action("Index","RoleInfo")";
+        }
+
+        $(function () {
+            $('#btnSave').bind('click', function () {
+                $("input[type=checkbox]:disabled").prop("disabled", "");
+                $('#RoleForm').removeData('validator');
+                $('#RoleForm').removeData('unobtrusiveValidation');
+                $.validator.unobtrusive.parse('#RoleForm');
+                var $form = $("#RoleForm");
+                var bool = $form.validate().form();
+                if (bool) {
+                    $.ajax({
+                        url: $form.attr("action"),
+                        dataType: "html",
+                        data: $form.serialize(),
+                        type: "POST",
+                        beforeSend: showLoading(),
+                        success: function (data) {
+                            if (data == "Success") {
+
+                                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_AddSuccessful")", gotourl);
+                            } else {
+                                Messenger.showError(data);
+                            }
+                        },
+                        error: function () {
+                            buildError()
+                        },
+                        complete: function () {
+                            hideLoading();
+                            $('#RoleForm').removeData('validator');
+                            $('#RoleForm').removeData('unobtrusiveValidation');
+                            $.validator.unobtrusive.parse('#RoleForm');
+                        }
+                    });
+                }
+            });
+        });
+
+
+
+    </script>
+                                        )

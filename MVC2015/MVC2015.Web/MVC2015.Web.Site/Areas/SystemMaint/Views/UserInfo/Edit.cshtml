@@ -1,0 +1,329 @@
+﻿@using MVC2015.Web.Model.SystemMaint.UserInfo
+@using MVC2015.Web.Site.Common
+@using MVC2015.Utility.Resource
+@model UserInfoItem
+@{
+    ViewBag.ShowSubmit = true;
+    ViewBag.Title = @ResourceHelper.GetValue("SM_UserInfo_Edit");
+}
+
+<style>
+    .stations a {
+        margin-bottom: 20px;
+    }
+
+    .stations_line {
+        clear: both;
+        height: 1px;
+        background: #AFAFAF;
+        margin-bottom: 20px;
+    }
+
+    .province > div {
+        margin-left: 80px;
+    }
+
+    .province h3 {
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .province h4 {
+        margin-top: 5px;
+        font-weight: bold;
+    }
+
+    .province div:last-child .stations_line {
+        margin-left: -80px;
+        background: #108040;
+    }
+
+    .province .city {
+        float: left;
+        width: 10%;
+    }
+
+    .province .stations {
+        float: right;
+        width: 90%;
+    }
+
+    .check-primary {
+        background-color: #E2E2E2;
+        border: 1px solid #A3A3A3;
+        cursor: pointer;
+        font-size: 13px;
+        padding: 3px 12px 3px 12px;
+        font-weight: bold;
+        margin: 0 15px 0 0;
+        line-height: normal;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+        .check-primary:hover {
+            background-color: #3EB249 !important;
+            border-color: #3EB249 !important;
+            cursor: pointer;
+            font-size: 13px;
+            color: #FFF;
+        }
+
+        .check-primary.active {
+            background-color: #3EB249 !important;
+            border-color: #3EB249 !important;
+            cursor: pointer;
+            font-size: 13px;
+            color: #FFF;
+        }
+
+    #RoleId {
+        width: 100%;
+    }
+
+    .companys {
+        width: 91.666666666666%;
+        float: right;
+        padding: 4px;
+    }
+</style>
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_UserInfo_Edit")
+    </h2>
+</div>
+
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_UserInfo_BasicInfo")
+    </div>
+</div>
+<div class="titlemenu">
+    <input type="button" value="@ResourceHelper.GetValue("Common_Button_Save")" id="btnSave" />
+    <a href="@Url.Action("Index", "UserInfo")" class="abtn">@ResourceHelper.GetValue("Common_Button_Return")</a>
+</div>
+@using (@Html.Form("Edit", "UserInfo", new { UserId = Model.UserId }, FormMethod.Post, new { id = "editUserForm" }))
+{
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_UserInfo_LogonName")：@Html.HiddenFor(m => m.UserId)
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.LogonName, new { @class = "field-input" })
+        </div>
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_UserInfo_UserName"):
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "field-input" })
+        </div>
+    </div>
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_RoleName")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.DropDownListFor(m => m.RoleId, Model.RoleSelectList)
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_DomainAccount")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.DomainAccount, new { @class = "field-input" })
+        </div>
+    </div>
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_UserInfo_EmailAddress") (Email)：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "field-input" })
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_UserStatus")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.RadioListFor(m => m.StrStatus, 2, 50)
+        </div>
+    </div>
+
+    <div class="row section-head">
+        <div class="section-title">
+            @ResourceHelper.GetValue("SM_UserInfo_Company")
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="section-title">
+            @Html.HiddenFor(m => m.UserCompanyValue)
+        </div>
+        <div class="row field-row">
+            @{
+    var companyMap = MVC2015.Web.Site.Common.CompanyMap.GetALLCompanyMap();
+            }
+            <div class="companys">
+                @foreach (var company in companyMap)
+                {
+                    string isChecked = string.Empty;
+                    string isCheckedClass = string.Empty;
+                    if (Model.CompanySelectList.Where(m => m.Text == company.CompanyName).Count() != 0)
+                    {
+                        isChecked = "checked";
+                        isCheckedClass = "active";
+                    }
+                    string btnID = "btnID" + company.CompanyId.ToString();
+                    string checkID = "checkID" + company.CompanyId.ToString();
+                    <div class="check-primary @isCheckedClass" id="@btnID" onclick="selectCompany('@checkID', '@Model.UserId')">
+                        <span style=" text-align:center;"><input type="checkbox" onclick="checkCompany(this)" id="@checkID" name="CompanyList" autocomplete="off" readonly="readonly" value="@company.CompanyId" @isChecked></span>
+                        <span style=" margin-bottom: 5px;">@company.CompanyName</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @*<div id="gasStationMap">
+        @Html.Action("GetGasStationMap", new { id = Model.UserId, value = Model.UserCompanyValue })
+    </div>*@
+
+    <div class="row">
+        @Html.ValidationSummary()
+    </div>
+}
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        $(function () {
+            $('#btnSave').bind('click', function () {
+                var $form = $("#editUserForm");
+                var bool = $form.validate().form();
+                if (bool) {
+                    $.ajax({
+                        url: $form.attr("action"),
+                        dataType: "html",
+                        data: $form.serialize(),
+                        type: "POST",
+                        beforeSend: showLoading(),
+                        success: function (data) {
+                            if (data == "Success") {
+
+                                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_UpdatedSuccessful")",
+                                        gotoUrl("@Url.Action("Index", "UserInfo", new { area = "SystemMaint" })"));
+                            } else {
+                                Messenger.showError(data);
+                                //$("#editUserForm").html(data);
+                            }
+                        },
+                        error: function () {
+                            buildError()
+                        },
+                        complete: function () {
+                            hideLoading()
+                        }
+                    });
+                }
+            });
+        });
+
+        //company
+        function checkCompany(thisCheck) {
+            thisCheck.checked = !thisCheck.checked;
+        }
+        //company
+        function selectCompany(checkID, userId) {
+            var thisCheck = $("#" + checkID)[0];
+            thisCheck.checked = !thisCheck.checked;
+            var value = thisCheck.defaultValue;
+            var UserCompanyValue = $("#UserCompanyValue").val();
+            if (thisCheck.checked == true) {
+                if (UserCompanyValue == "") {
+                    $("#UserCompanyValue").val(value + ",");
+                }
+                else {
+                    $("#UserCompanyValue").val(UserCompanyValue + "," + value + ",");
+                }
+
+                $("#btnID" + thisCheck.value).addClass("active");
+            }
+            else {
+                if (UserCompanyValue.replace("," + value + ",", ",") == UserCompanyValue) {
+                    UserCompanyValue = UserCompanyValue.replace(value, "");
+                    UserCompanyValue = UserCompanyValue.replace(value + ",", "");
+                } else {
+                    UserCompanyValue = UserCompanyValue.replace("," + value + ",", ",");
+                }
+                //UserCompanyValue = UserCompanyValue.replace("," + value + ",", ",");
+                //UserCompanyValue = UserCompanyValue.replace(value + ",", "");
+                //UserCompanyValue = UserCompanyValue.replace(value, "");
+                $("#UserCompanyValue").val(UserCompanyValue);
+
+                $("#btnID" + thisCheck.value).removeClass("active");
+            }
+
+            var NewUserCompanyValue = $("#UserCompanyValue").val();
+            var Url = "@Url.Action("GetGasStationMaps", "UserInfo")";
+            try {
+                $.ajax({
+                    url: Url,
+                    type: "Post",
+                    dataType: "html",
+                    data: { "id": userId, "value": NewUserCompanyValue },
+                    success: function (result) {
+                        $("#gasStationMap").html(result)
+                    },
+                    error: function (e) {
+                        buildError();
+                    },
+                    complete: function () {
+
+                    }
+                });
+            } catch (e) { }
+        }
+
+
+        function checkGasStation(thisCheck) {
+            thisCheck.checked = !thisCheck.checked;
+        }
+
+        function selectGasStation(checkID, id) {
+            var thisCheck = $("#" + checkID)[0];
+            thisCheck.checked = !thisCheck.checked;
+            var value = thisCheck.defaultValue;
+            var UserGasStationValue = $("#UserGasStationValue").val();
+            if (thisCheck.checked == true) {
+                if (UserGasStationValue == "") {
+                    $("#UserGasStationValue").val(value + ",");
+                }
+                else {
+                    $("#UserGasStationValue").val(UserGasStationValue + "," + value);
+                }
+
+                $("#btnID" + thisCheck.value).addClass("active");
+
+            }
+            else {
+                UserGasStationValue = UserGasStationValue.replace("," + value, "");
+                UserGasStationValue = UserGasStationValue.replace(value + ",", "");
+                UserGasStationValue = UserGasStationValue.replace(value, "");
+                $("#UserGasStationValue").val(UserGasStationValue);
+
+                $("#btnID" + thisCheck.value).removeClass("active");
+            }
+
+        }
+
+        function Inverse() {
+            $("input[name='GasStationList']").click();
+        }
+        function CheakAll() {
+            var GasStationList = $("input[name='GasStationList']");
+            for (var i = 0 ; i < GasStationList.length; i++) {
+                if (GasStationList[i].checked == false) {
+                    GasStationList[i].click();
+                }
+            }
+        }
+    </script>
+                                                    )

@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9199BD06-F30E-4032-B470-B4FDFF0ACC9C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MVC2015.FullTextSearch</RootNamespace>
+    <AssemblyName>MVC2015.FullTextSearch</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GeoAPI">
+      <HintPath>..\packages\GeoAPI.1.6.0\lib\net35\GeoAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Analysis.MMSeg">
+      <HintPath>..\packages\Lucene.Net.Analysis.MMSeg.1.0.3\lib\Lucene.Net.Analysis.MMSeg.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Analyzers">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Analyzers.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Core">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.FastVectorHighlighter">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.FastVectorHighlighter.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Highlighter">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Highlighter.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Memory">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Queries">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Queries.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Regex">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Regex.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.SimpleFacetedSearch">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.SimpleFacetedSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Snowball">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Snowball.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Spatial">
+      <HintPath>..\packages\Lucene.Net.Contrib.Spatial.3.0.3\lib\net40\Lucene.Net.Contrib.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Spatial.NTS">
+      <HintPath>..\packages\Lucene.Net.Contrib.Spatial.NTS.3.0.3\lib\net40\Lucene.Net.Contrib.Spatial.NTS.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.SpellChecker">
+      <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.SpellChecker.dll</HintPath>
+    </Reference>
+    <Reference Include="NetTopologySuite">
+      <HintPath>..\packages\NetTopologySuite.1.12.0\lib\net35\NetTopologySuite.dll</HintPath>
+    </Reference>
+    <Reference Include="PanGu">
+      <HintPath>..\packages\Lucene.Net.Analysis.PanGu.2.4.1\lib\PanGu.dll</HintPath>
+    </Reference>
+    <Reference Include="PanGu.HighLight">
+      <HintPath>..\packages\Lucene.Net.Analysis.PanGu.2.4.1\lib\PanGu.HighLight.dll</HintPath>
+    </Reference>
+    <Reference Include="PanGu.Lucene.Analyzer">
+      <HintPath>..\packages\Lucene.Net.Analysis.PanGu.2.4.1\lib\PanGu.Lucene.Analyzer.dll</HintPath>
+    </Reference>
+    <Reference Include="PowerCollections">
+      <HintPath>..\packages\NetTopologySuite.1.12.0\lib\net35\PowerCollections.dll</HintPath>
+    </Reference>
+    <Reference Include="Spatial4n.Core">
+      <HintPath>..\packages\Spatial4n.Core.0.3\lib\net40\Spatial4n.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Spatial4n.Core.NTS">
+      <HintPath>..\packages\Spatial4n.Core.NTS.0.3\lib\net40\Spatial4n.Core.NTS.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LuceneSample.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MVC2015.DataProvider\MVC2015.DataProvider.MVC2015DB\MVC2015.DataProvider.MVC2015DB.csproj">
+      <Project>{f91687a4-3aa5-42d5-8cd3-776495dfd31c}</Project>
+      <Name>MVC2015.DataProvider.MVC2015DB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVC2015.Web\MVC2015.Web.BusinessLogic\MVC2015.Web.BusinessLogic.csproj">
+      <Project>{ee505f76-1c4b-4df4-bb96-52c039ef4ceb}</Project>
+      <Name>MVC2015.Web.BusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVC2015.Web\MVC2015.Web.Model\MVC2015.Web.Model.csproj">
+      <Project>{3690dd05-20b9-4a56-baa0-6001db40239a}</Project>
+      <Name>MVC2015.Web.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

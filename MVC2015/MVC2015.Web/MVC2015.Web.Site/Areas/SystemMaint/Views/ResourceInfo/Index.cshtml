@@ -1,0 +1,110 @@
+﻿@using MVC2015.Web.Site
+@using MVC2015.Web.Model.SystemMaint.ResourceInfo
+@using MVC2015.Utility.Resource;
+@model ResourceInfoModel
+@{
+    ViewBag.Title = ResourceHelper.GetValue("SM_ResourceInfo_PageTitle");
+}
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_ResourceInfo_PageTitle")
+    </h2>
+</div>
+
+<div style="display: none;" data-element="data-resourceInfo">
+    <span data-text="new-@ResourceHelper.GetValue("Common_DialogAdd_Title")@ResourceHelper.GetValue("SM_ResourceInfo")"></span>
+    <span data-url="create-@Url.Action("Create", "ResourceInfo")"></span>
+    <span data-url="update-@Url.Action("Edit", "ResourceInfo")"></span>
+    <span data-url="fresh-@Url.Action("Index", "ResourceInfo")"></span>
+</div>
+
+<div class="row section-head">
+
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_ResourceInfo", "Common_PageList")
+    </div>
+    <div class="titlemenu col-sm-4 Customcoloer" data-element="buttons-resourceInfo">
+        <div class="row field-row">
+
+            <input type="button" name="Second" style="right: 0px;position: absolute;display:none;" class="export" value="@ResourceHelper.GetValue("Common_Page_export")" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="titlemenu">
+        @if (MVC2015.Web.Site.Common.PermissionHelper.CheckPermission("SystemMaint", "ResourceInfo", "Create"))
+        {
+            <input type="button" value="@ResourceHelper.GetValue("Common_Page_Add")" onclick="create()" />
+        }
+    </div>
+</div>
+
+<div class="row" id="resourceInfo-container" data-element="grid-resourceInfo">
+    <script>
+        //for DevExpress, post form data
+        //function OnBeginCallback(s, e) {
+        //    var searchElement = $("[data-element^=search]");
+        //    var identity = searchElement.attr("data-element").split("-")[1];
+        //    var $searchForm = $("[data-element=search-" + identity + "] form");
+        //    var preSearchVal = $searchForm.serializeArray();
+        //    var jsonStr = {};
+        //    $.each(preSearchVal, function () {
+        //        jsonStr[this.name] = this.value;
+        //    });
+        //    e.customArgs["searchModel"] = JSON.stringify(jsonStr);
+        //}
+    </script>
+    <div data-element="grid-resourceInfo">
+        @Html.Partial("_List", Model.List)
+    </div>
+</div>
+
+@Html.Partial("_NormalModal")
+<div data-element="popout-roleInfo">
+    @Html.Partial("_FormModal")
+</div>
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+    function showDetail(id) {
+        showModal("#normal-modal", "@ResourceHelper.GetValue("SM_ResourceInfo")@ResourceHelper.GetValue("Common_DialogDeatil_Title")", "@Url.Action("GetDetail", "ResourceInfo")?id=" + id);
+    }
+
+    function grid_resourceInfo_edit(sender, paramObj) { //identity, parent, parentIdentity, params, eventName, eventType, e
+        var identity = paramObj.identity;
+        var updateUrl = getUrl(identity, "update") + "?id=" + paramObj.params["id"];
+        var formModal = getFormModal(identity);//$("[data-element=popout-" + identity + "]" + " #form-modal");      $modal, $form, $body, result
+        showFormModal(formModal, "@ResourceHelper.GetValue("Common_Page_Edit")@ResourceHelper.GetValue("SM_ResourceInfo")",
+            updateUrl, {}, updateUrl, function (result, $modal, $body, $form) { });
+    }
+
+    function popout_resourceInfo_save(sender, paramObj) {//identity, parent, parentIdentity, param, eventName, eventType, e
+        paramObj.event.preventDefault();
+        var identity = paramObj.identity;
+        var url = sender.attr("action").toLowerCase();
+        post(url, sender.serialize(), function (result) {
+            try {
+                if (eval(result) == true) {
+                    if (url.indexOf("edit") > -1)
+                        Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_UpdateSuccessful")");
+                    if (url.indexOf("create") > -1)
+                        Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_AddSuccessful")");
+                    var formModal = getFormModal(identity);
+                    formModal.modal("hide");
+                    gvResourceInfo.Refresh();
+                }
+                else {
+                    if (url.indexOf("edit") > -1)
+                        Messenger.showError("@ResourceHelper.GetValue("Message_Common_UpdateFail")");
+                    if (url.indexOf("create") > -1)
+                        Messenger.showError("@ResourceHelper.GetValue("Message_Common_AddFail")");
+                }
+            } catch (e) {
+                $("#form-modal-body").html(result);
+            }
+        });
+    }
+        function create() {
+            location.href = "@Url.Action("Create", "ResourceInfo")";
+        }
+    </script>
+                                                                    )

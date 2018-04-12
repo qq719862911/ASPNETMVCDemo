@@ -1,0 +1,120 @@
+﻿@*@using GSIMS.Model.SystemMaint.UserInfo
+@using GSIMS.Web.Common
+@using GSIMS.Resource
+@model UserInfoItem
+
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_UserInfo_Station")
+    </div>
+</div>
+<div class="row field-row">
+    <div class="col-md-1 field-title">
+        @Html.HiddenFor(m => m.UserGasStationValue)
+    </div>
+    <div class="col-md-11 field-content">
+        @{
+            var gasStationMap = GSIMS.Web.Common.GasStationMap.GetGasStationMapByCompany(Model.UserCompanyValue);
+        }
+
+
+        @if (gasStationMap.Count > 0)
+        {
+        <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist" style="padding-top:30px;">
+                @for (int i = 0; i < gasStationMap.Count; i++)
+                {
+                    var id = "area" + i;
+                    if (i == 0)
+                    {
+                        <li class="active"><a href="#@id" role="tab" data-toggle="tab">@gasStationMap[i].Area</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="#@id" role="tab" data-toggle="tab">@gasStationMap[i].Area</a></li>
+                    }
+
+                }
+            </ul>
+
+            <div id="search_box" class="titlemenu" data-element="search-Area" style="padding-top:5px;">
+                <a id="allGs" class="abtn" onclick="CheakAll()">@ResourceHelper.GetValue("Common_Button_CheakAll")</a>
+                <a id="allGs" class="abtn" onclick="Inverse()">@ResourceHelper.GetValue("Common_Button_Inverse")</a>
+            </div>
+            <!-- Tab panes -->
+            @Html.Raw("<div class='tab-content'>")
+            for (int i = 0; i < gasStationMap.Count; i++)
+            {
+
+                var id = "area" + i;
+            <!--area-->
+                if (i == 0)
+                {
+                    @Html.Raw("<div class='tab-pane active' id='" + @id + "'>")
+                }
+                else
+                {
+                    @Html.Raw("<div class='tab-pane' id='" + @id + "'>")
+                }
+
+                foreach (var p in gasStationMap[i].Province)
+                {
+		        <!--province-->
+                    <div class="province">
+                        <h3>@p.Key</h3>
+                        <!--city begin-->
+                        @foreach (var city in p.Value)
+                        {
+                            <div>
+                                <div class="city">
+                                    <h4>@city.City</h4>
+                                </div>
+                                <div class="stations">
+                                    @foreach (var gas in city.IdName)
+                                    {
+                                        string isChecked = string.Empty;
+                                        string isCheckedClass = string.Empty;
+                                        if (Model.GasStationSelectList.Where(m => m.Text == gas.Name).Count() != 0)
+                                        {
+                                            isChecked = "checked";
+                                            isCheckedClass = "active";
+                                        }
+                                        string btnID = "btnID" + gas.GasStationId.ToString();
+                                        string checkID = "checkID" + gas.GasStationId.ToString();
+                                        <div class="check-primary @isCheckedClass" id="@btnID" onclick="selectGasStation('@checkID')">
+                                            <span style=" text-align:center;"><input type="checkbox" onclick="checkGasStation(this)" id="@checkID" name="GasStationList" autocomplete="off" readonly="readonly" value="@gas.GasStationId" @isChecked></span>
+                                            <span style=" margin-bottom: 5px;">@gas.Name</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="stations_line"></div>
+                            </div>
+                        }
+
+                        <!--city end-->
+
+                    </div>
+                }
+
+                @Html.Raw("</div>")
+            }
+            @Html.Raw("</div>")
+
+        }
+        else
+        {
+            <ul class="nav nav-tabs" role="tablist" style="padding-top:30px;"></ul>
+            <div id="search_box" class="titlemenu" data-element="search-Area" style="padding-top:5px;">
+                <a id="allGs" class="abtn" onclick="CheakAll()">@ResourceHelper.GetValue("Common_Button_CheakAll")</a>
+                <a id="allGs" class="abtn" onclick="Inverse()">@ResourceHelper.GetValue("Common_Button_Inverse")</a>
+            </div>
+            <div style="text-align: center; font-size: 18px; color: gray; width: 940px; padding-top: 20px">@ResourceHelper.GetValue("Common_GridView_NoData")</div>
+        }
+
+
+
+
+
+
+    </div>
+</div>*@

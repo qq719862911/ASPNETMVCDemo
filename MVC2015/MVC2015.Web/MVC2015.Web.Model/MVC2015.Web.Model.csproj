@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3690DD05-20B9-4A56-BAA0-6001DB40239A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MVC2015.Web.Model</RootNamespace>
+    <AssemblyName>MVC2015.Web.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Account\ForgetModel.cs" />
+    <Compile Include="Account\IdentityModel.cs" />
+    <Compile Include="Account\LoginModel.cs" />
+    <Compile Include="Common\BaseModel.cs" />
+    <Compile Include="Common\BaseSearchModel.cs" />
+    <Compile Include="Common\EnumType.cs" />
+    <Compile Include="Common\IPager.cs" />
+    <Compile Include="Common\KeyValueModel.cs" />
+    <Compile Include="Common\PageTitleModel.cs" />
+    <Compile Include="Common\RouteValue.cs" />
+    <Compile Include="Common\TextValue.cs" />
+    <Compile Include="Common\UserItem.cs" />
+    <Compile Include="DataAnnotations\CustomeDateTimeAttribute.cs" />
+    <Compile Include="DataAnnotations\DateTimeNotLessThan.cs" />
+    <Compile Include="DataAnnotations\KeyValueAttribute.cs" />
+    <Compile Include="DataAnnotations\RequiredExAttributeAdapter.cs" />
+    <Compile Include="Email\EmailTemplateParam.cs" />
+    <Compile Include="Email\SendEmailInfo.cs" />
+    <Compile Include="KeyValue\UserStatus.cs" />
+    <Compile Include="Permission\Permission.cs" />
+    <Compile Include="Permission\BrowserVersion.cs" />
+    <Compile Include="Permission\RolePermission.cs" />
+    <Compile Include="Permission\SiteMenu.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemMaint\Company\CompanyIdModel.cs" />
+    <Compile Include="SystemMaint\Company\CompanyMap.cs" />
+    <Compile Include="SystemMaint\Company\CompanyModel.cs" />
+    <Compile Include="SystemMaint\Company\CompanySearch.cs" />
+    <Compile Include="SystemMaint\Company\CompanySelectListItem.cs" />
+    <Compile Include="SystemMaint\Company\CompanyUserList.cs" />
+    <Compile Include="SystemMaint\FileUpload\FileItem.cs" />
+    <Compile Include="SystemMaint\FileUpload\FileModel.cs" />
+    <Compile Include="SystemMaint\FileUpload\FileSearch.cs" />
+    <Compile Include="SystemMaint\FullTextSearch\SearchModel.cs" />
+    <Compile Include="SystemMaint\FullTextSearch\SearchWhere.cs" />
+    <Compile Include="SystemMaint\Module\ModuleItem.cs" />
+    <Compile Include="SystemMaint\Module\ModulePermission.cs" />
+    <Compile Include="SystemMaint\ResourceInfo\ResourceInfoItem.cs" />
+    <Compile Include="SystemMaint\ResourceInfo\ResourceInfoModel.cs" />
+    <Compile Include="SystemMaint\ResourceInfo\ResourceInfoSearch.cs" />
+    <Compile Include="SystemMaint\RoleInfo\RoleInfoItem.cs" />
+    <Compile Include="SystemMaint\RoleInfo\RoleInfoModel.cs" />
+    <Compile Include="SystemMaint\RoleInfo\RoleInfoSearch.cs" />
+    <Compile Include="SystemMaint\RoleInfo\RolePermission.cs" />
+    <Compile Include="SystemMaint\SystemCode\SystemCodeItem.cs" />
+    <Compile Include="SystemMaint\UserInfo\UserInfoItem.cs" />
+    <Compile Include="SystemMaint\UserInfo\UserInfoModel.cs" />
+    <Compile Include="SystemMaint\UserInfo\UserInfoSearch.cs" />
+    <Compile Include="SystemMaint\UserInfo\UserInfoUpdatePassword.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MVC2015.Utility\MVC2015.Utility.Common\MVC2015.Utility.Common.csproj">
+      <Project>{24715484-9c7f-45bd-b24c-1210bfdeb870}</Project>
+      <Name>MVC2015.Utility.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MVC2015.Utility\MVC2015.Utility.Resource\MVC2015.Utility.Resource.csproj">
+      <Project>{7ad8f20d-0de6-4f4d-86a7-dd8ee529a7d6}</Project>
+      <Name>MVC2015.Utility.Resource</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

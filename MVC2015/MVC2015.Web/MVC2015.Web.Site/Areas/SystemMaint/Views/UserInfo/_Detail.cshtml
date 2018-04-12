@@ -1,0 +1,83 @@
+﻿@using VM = MVC2015.Web.Model.SystemMaint.UserInfo
+@using MVC2015.Web
+@using MVC2015.Web.Model
+@using MVC2015.Web.Model.KeyValue
+@using MVC2015.Utility.Resource
+@model VM.UserInfoItem
+
+<style type="text/css">
+    .modal-dialog {
+        width: 850px;
+        padding-top: 0;
+    }
+
+    .modal-body {
+        padding-top: 0;
+        padding-bottom: 20px !important;
+    }
+</style>
+
+
+<div style="max-height: 800px; max-width: 850px;word-break:break-all;">
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_LogonName")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.LogonName
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_UserName"):
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.UserName
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_RoleName")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.RoleName
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_DomainAccount")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.DomainAccount
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_EmailAddress") (Email)：
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.EmailAddress
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_UserStatus")：
+        </div>
+        <div class="col-md-3 field-content">
+            @if (Model.Status == 1)
+            {
+                @ResourceHelper.GetValue("SM_UserInfo_UserStatus_Normal")
+            }
+            else
+            {
+                @ResourceHelper.GetValue("SM_UserInfo_UserStatus_Forbidden")
+            }
+
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_UserCompany")：
+        </div>
+        <div class="col-md-7 field-content">
+            @Model.UserCompanyName
+        </div>
+    </div>
+   
+
+</div>

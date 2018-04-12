@@ -1,0 +1,68 @@
+﻿@using System.Web.UI.WebControls;
+@using MVC2015.Web;
+@using MVC2015.Web.Model.Common;
+@using MVC2015.Web.Site.Common;
+@using MVC2015.Utility.Resource;
+@using VM = MVC2015.Web.Model.SystemMaint.UserInfo;
+
+
+<div class="userList">
+    <table class="grid" style="word-break:break-all;">
+        <thead>
+            <tr>
+                <th width=25%>
+                    @ResourceHelper.GetValue("SM_UserInfo_LogonName")
+                </th>
+                <th width=25%>
+                    @ResourceHelper.GetValue("SM_UserInfo_UserName")
+                </th>
+                <th width=30%>
+                    @ResourceHelper.GetValue("SM_Company")
+                </th>
+                <th width=20%>
+                    @ResourceHelper.GetValue("SM_UserInfo_RoleName")
+                </th>
+            </tr>
+        </thead>
+        <tbody id="userList">
+            @{
+                var i = 0;
+                MVC2015.Web.BusinessLogic.SystemMaint.Company comBL = new MVC2015.Web.BusinessLogic.SystemMaint.Company();
+                foreach (var user in Model)
+                {
+                    string userCompanyName = string.Empty;
+                    int j = 0;
+                    var companyList = comBL.GetCompanyListByUserId(user.UserId);
+                    foreach(var company in companyList) {
+                        if (j > 0)
+                        {
+                            userCompanyName += ", " + company.Name;
+                        }
+                        else
+                        {
+                            userCompanyName += company.Name;
+                        }
+                        j++;
+                    }
+                    var rowClass = "gridrow";
+                    i++;
+                    if (i % 2 != 0) { rowClass = "gridrow_alternate"; }
+                    <tr id="@user.UserId" class="@rowClass">
+                        <td>
+                            @user.LogonName
+                        </td>
+                        <td>
+                            @user.UserName
+                        </td>
+                        <td>
+                            @userCompanyName
+                        </td>
+                        <td>
+                            @user.RoleName
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

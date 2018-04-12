@@ -1,0 +1,128 @@
+﻿@using MVC2015.Web.Site
+@using MVC2015.Web.Site.Common
+@using MVC2015.Utility.Resource
+
+<div id="loadingUI" style="display: none; border: 4px solid #333333; background-color: #FFFFFF; text-align: center; width: 300px">
+    <div style="margin: 10px; font-weight: bold; font-size: 1.25em; color: #666666;">
+        @ResourceHelper.GetValue("Common_Page_Loading")
+    </div>
+    <img src="~/Images/Main/loading.gif" alt="loading" style="margin: 10px auto 20px auto" />
+</div>
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        //判断浏览器版本，如果是IE10以下的则会弹出消息
+        var menuYloc = null;
+        $(document).ready(function () {
+            //var Sys = {};
+            //var ua = navigator.userAgent.toLowerCase();
+            //var s;
+            //(s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] :
+            //(s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
+            //(s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
+            //(s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
+            //(s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0
+            //if (Sys.firefox < '5.0' || Sys.chrome < '14.0' || Sys.safari < '5.0' || Sys.opera < '11.0' || Sys.ie < 10.0) {
+            //    $('#floatMess').css("z-index", "10000").css("display", "");
+            //}
+            //menuYloc = parseInt($('#floatMess').css("top").substring(0, $('#floatMess').css("top").indexOf("px")))
+            //$(window).scroll(function () {
+            //    offset = menuYloc + $(document).scrollTop() + "px";
+            //    $('#floatMess').animate({ top: offset }, { duration: 500, queue: false });
+            //});
+            //$('#floatMess').click(function () {
+            //    $('#floatMess').animate({ top: "-=15px", opacity: 0 }, "slow");
+            //});
+
+            var browserVersionType = getCookie("BrowserVersionType");
+            if (browserVersionType <= 0) {
+                $('#floatMess').css("z-index", "10000").css("display", "");
+
+                menuYloc = parseInt($('#floatMess').css("top").substring(0, $('#floatMess').css("top").indexOf("px")))
+                $(window).scroll(function () {
+                    offset = menuYloc + $(document).scrollTop() + "px";
+                    $('#floatMess').animate({ top: offset }, { duration: 500, queue: false });
+                });
+                $('#floatMess').click(function () {
+                    $('#floatMess').animate({ top: "-=15px", opacity: 0 }, "slow");
+                });
+            }
+        });
+
+        function getCookie(cookieName) {
+            var strCookie = document.cookie;
+            var arrCookie = strCookie.split("; ");
+            for (var i = 0; i < arrCookie.length; i++) {
+                var arr = arrCookie[i].split("=");
+                if (cookieName == arr[0]) {
+                    return arr[1];
+                }
+            }
+            return "";
+        }
+        //Show Process Waiting Loading Screen
+        function showLoading() {
+            $("#loadingUI").show();
+            $("#loadingUI").bPopup({
+                escClose: false, followSpeed: 0
+               , zIndex: 1990
+               , modalClose: false
+            });
+        }
+
+        //Show Backgroud screen
+        function showLoadingBackground() {
+            $("#loadingUI").bPopup({
+                escClose: false, followSpeed: 0
+               , zIndex: 1990
+               , modalClose: false
+            });
+            $("#loadingUI").hide();
+        }
+
+        //Hide Process Waiting Loading Screen
+        function hideLoading() {
+            $("#loadingUI").bPopup().close();
+            popup_notification();
+            popup_notification = function () { };
+        }
+
+        var popup_notification = function () { };
+        //Build Common Successful Notification Message
+        function buildInfo() {
+            popup_notification = function () {
+                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_Successful")");
+            }
+        }
+        //Build Common Error Notification Message
+        function buildError() {
+            popup_notification = function () {
+                Messenger.showError("@ResourceHelper.GetValue("Message_Common_Error")");
+            }
+        }
+        //Building Notification Message with parameter
+        function buildMessage(msgType, msgContent) {
+            popup_notification = function () {
+                Messenger.showSuccess(msgType, msgContent);
+            }
+        }
+        //Common Popup confirm action
+        function commonConfirm() {
+            return confirm("confirm");
+        }
+
+        // dispaly message from cookie "MessageKey"
+        //function showMessageFromCookie() {
+
+        //    var cookieObj = CookieHelper.getCookieObj("MessageKey");
+        //    if (cookieObj != null) {
+        //        if (cookieObj.MessageType != null && cookieObj.MessageType != undefined && cookieObj.MessageType.indexOf("Failure") != -1) {
+        //            Messenger.showSuccess(ChartCodeToString(cookieObj.Message));
+        //            //buildError();
+        //        } else {
+        //            Messenger.showSuccess(ChartCodeToString(cookieObj.Message));
+        //            //buildInfo();
+        //        }
+        //    }
+        //}
+    </script>
+            )

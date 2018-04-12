@@ -1,0 +1,26 @@
+﻿@using MVC2015.Web;
+@using MVC2015.Utility.Resource;
+@using VM = MVC2015.Web.Model.SystemMaint.Module;
+@model VM.ModuleItem
+
+@{
+
+    int ModulePermissionCount = ViewBag.ModulePermissionCount;
+    int ModulePermissionIndex = ViewBag.ModulePermissionIndex;
+    int count = ModulePermissionIndex + ModulePermissionCount;
+}
+
+<td id="permission_@ModulePermissionIndex">
+    @for (int i = ModulePermissionIndex; i < count; i++)
+    {
+        @Html.HiddenFor(m => m.ModulePermissions[i].Id)
+        @Html.HiddenFor(m => m.ModulePermissions[i].ModuleId)
+        @Html.HiddenFor(m => m.ModulePermissions[i].Value)
+        <label style="font-size: inherit; font-weight: inherit;margin-right:5px;" class="checkbox-inline">
+            @Html.CheckBoxFor(m => m.ModulePermissions[i].IsSelected, new { title = ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey), disabled = "disabled" })
+            @ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey)
+        </label>
+    }
+</td>
+
+

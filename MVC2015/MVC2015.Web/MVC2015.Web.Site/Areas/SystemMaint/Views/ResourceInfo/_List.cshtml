@@ -1,0 +1,89 @@
+﻿@using System.Web.UI.WebControls;
+@using MVC2015.Web.Site;
+@using MVC2015.Web.Model.Common;
+@using MVC2015.Web.Model.KeyValue;
+@using MVC2015.Utility.Resource;
+@using MVC2015.Web.Site.Common;
+
+@{
+    string datetimeFormate = ViewBag.DisplayDate;
+    DevexpressGridViewSettings gridSettings = new DevexpressGridViewSettings("gvResource");
+    var settings = gridSettings.Settings();
+    settings.KeyFieldName = "ResourceKey";
+    settings.CallbackRouteValues = new { Controller = "ResourceInfo", Action = "GetList" };
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+    settings.SettingsBehavior.EnableRowHotTrack = true;
+
+
+    settings.Columns.Add("ResourceKey", ResourceHelper.GetValue("SM_Resource_Key")).Width = Unit.Percentage(20);
+    settings.Columns.Add("ResourceValueZHCN", ResourceHelper.GetValue("SM_Resource_ValueZHCN")).Width = Unit.Percentage(20);
+    settings.Columns.Add("ResourceValueZHHK", ResourceHelper.GetValue("SM_Resource_ValueZHHK")).Width = Unit.Percentage(20);
+    settings.Columns.Add("ResourceValueENUS", ResourceHelper.GetValue("SM_Resource_ValueENUS")).Width = Unit.Percentage(20);
+
+    //操作
+    bool hasEdit = PermissionHelper.CheckPermission("SystemMaint", "ResourceInfo", "Edit");
+    bool hasDelete = PermissionHelper.CheckPermission("SystemMaint", "ResourceInfo", "Delete");
+    //var siteAdminName = GSIMS.Model.Common.EnumRole.SiteAdmin.ToString();
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "ResourceKey";
+        column.Settings.AutoFilterCondition = AutoFilterCondition.Equals;
+        column.Caption = ResourceHelper.GetValue("Common_PageList_Action");
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Width = Unit.Percentage(10);
+        column.Settings.AllowAutoFilter = DefaultBoolean.False;
+        column.Settings.AllowSort = DefaultBoolean.False;
+        column.SetDataItemTemplateContent(c =>
+        {
+            string Id = (string)DataBinder.Eval(c.DataItem, "ResourceKey");
+
+            //修改
+            if (hasEdit)
+            {
+                ViewContext.Writer.Write(
+                   "<a class=\"grid-btn2\" href=\"" + Url.Action("Edit", "ResourceInfo", new { area = "SystemMaint", id = Id }) + "\" data-param=\"{id:" +
+                   string.Format("{0}", Id) +
+                   "}\" style = \"margin-left:5px;color: transparent;background-image: url('" + Url.Content("~/Images/Icon/g-edit.png") + "');\" title=\"" +
+                   ResourceHelper.GetValue("Common_Page_Edit") + "\">" +
+                   "</a>"
+                );
+            }
+            //删除
+            if (hasDelete)
+            {
+                ViewContext.Writer.Write(
+                Html.ActionLink(" ", "", "",
+                new
+                {
+                    id = Id
+                },
+                new { onclick = "deleteRes('" + Id + "'); return false;", @class = "grid-btn2", style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-delete.png") + "');", title = ResourceHelper.GetValue("Common_Page_Delete") })
+                 );
+            }
+        });
+    });
+    var gridView1 = Html.DevExpress().GridView(settings);
+
+}
+@gridView1.BindToEF(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "ResourceKey";
+}).GetHtml()
+
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        function deleteRes(key) {
+            var url = "@Url.Action("Delete", "ResourceInfo")" + "/" + key;
+            commonDelete("@ResourceHelper.GetValue("Message_Common_ConfirmDeletion")".replace("{0}", "\"" + key + "\""), url, function (message) {
+
+                if (message) {
+                    gvResource.Refresh();
+                    Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_DeleteSuccessful")");
+                } else {
+                    Messenger.showError("@ResourceHelper.GetValue("Message_RoleInfo_DeleteExist")".replace("{0}","\"" + key + "\""));
+                }
+            });
+        }
+    </script>)

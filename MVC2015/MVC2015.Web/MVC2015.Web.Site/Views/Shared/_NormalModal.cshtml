@@ -1,0 +1,52 @@
+﻿@using MVC2015.Web
+@using MVC2015.Utility.Resource
+
+<div id="normal-modal" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="normal-modal-title"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content div-sort dialog-custome-wrap" id="normal-modal-form">
+            <div class="row section-head">
+                <div class="modal-title section-title ">
+                    <h4 id="normal-modal-title" style="color:white; font-weight:bold;" class="modal-title">Normal Modal</h4>
+                </div>
+            </div>
+            <div class="titlemenu">
+                @if (ViewBag.ShowSubmit != null && ViewBag.ShowSubmit == true)
+                {
+                    <button type="button" id="NormalSave" data-dismiss="modal">
+                        @ResourceHelper.GetValue("Common_Button_Save")
+                    </button>
+                }
+                else
+                {
+                    if(ViewBag.ShowConfirm != null && ViewBag.ShowConfirm == true)
+                    {
+                        <button type="button" id="NormalSave" data-dismiss="modal">
+                            @ResourceHelper.GetValue("Common_Button_Sure")
+                        </button>
+                    }
+                }
+                <button type="button" data-dismiss="modal">
+                    @ResourceHelper.GetValue("Common_Button_Close")
+                </button>@* class="btn btn-default buttonfix btn-success"*@
+            </div>
+
+
+
+            @*<div class="modal-header dialog-custome-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;</button>
+                    <h4 id="normal-modal-title" style="color:white; font-weight:bold;" class="modal-title">Normal Modal</h4>
+                </div>*@
+            <div id="normal-modal-body" class="modal-body" style="min-height: 120px;padding-bottom:0" >
+                <img class="loading" src="@Url.Content("~/Images/Main/loading.gif")" alt="" />
+            </div>
+            <div class="modal-footer" style="display:none">
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

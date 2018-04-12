@@ -1,0 +1,304 @@
+﻿@using MVC2015.Web;
+@using MVC2015.Utility.Resource;
+@using MVC2015.Web.Site.Common;
+@using MVC2015.Web.Model.Common;
+@using VM = MVC2015.Web.Model.SystemMaint.Module;
+@model List<VM.ModuleItem>
+
+    @{
+        int rows = 0;
+        int cols = 0;
+        VM.ModuleItem ModulePermission = ViewData["ModulePermission"] as VM.ModuleItem;
+        ViewData["ModulePermissionIndex"] = 0;
+        ViewData["ModulePermissionCount"] = 0;
+        ViewBag.ModulePermissionIndex = 0;
+        ViewBag.ModulePermissionCount = 0;
+        ViewBag.ModuleId = 0;
+        bool userIsSiteAdmin = ViewBag.RoleId == (int)MVC2015.Web.Model.Common.EnumRole.SiteAdmin;
+    }
+<style>
+    .role-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+        .role-table td {
+            border: 1px solid #CFCFCF;
+            padding: 5px 5px;
+            margin: 0px 0px;
+        }
+</style>
+
+    <table class="role-table">
+        <tbody>
+            @foreach (VM.ModuleItem item in Model)
+            {
+                rows = 1;
+                cols = 3;
+                @Html.Raw("<tr>")
+                if (item.ChildModuleItems != null && item.ChildModuleItems.Count > 0)
+                {
+                    rows = 0;
+                    cols = 1;
+                    foreach (VM.ModuleItem childItem in item.ChildModuleItems)
+                    {
+                        rows += (childItem.ChildModuleItems != null && childItem.ChildModuleItems.Count > 0) ? childItem.ChildModuleItems.Count : 1;
+                    }
+                }
+                @*first col*@
+            <td rowspan="@rows" colspan="@cols" style="width:10%;">@ResourceHelper.GetValue(item.ResourceKey)</td>
+                if (item.ChildModuleItems != null && item.ChildModuleItems.Count > 0)
+                {
+                    for (int i = 0; i < item.ChildModuleItems.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            @Html.Raw("<tr>")
+                        }
+
+                        if (item.ChildModuleItems[i].ChildModuleItems != null && item.ChildModuleItems[i].ChildModuleItems.Count > 0)
+                        {
+                            <td rowspan="@item.ChildModuleItems[i].ChildModuleItems.Count" style="width:12%">@ResourceHelper.GetValue(item.ChildModuleItems[i].ResourceKey)</td>
+                            for (int j = 0; j < item.ChildModuleItems[i].ChildModuleItems.Count; j++)
+                            {
+                                ViewBag.ModulePermissionCount = 0;
+                                ViewBag.ModuleId = item.ChildModuleItems[i].ModuleId;
+                                if (item.ChildModuleItems[i].ChildModuleItems[j].ModulePermissions != null && item.ChildModuleItems[i].ChildModuleItems[j].ModulePermissions.Count > 0)
+                                {
+                                    ViewBag.ModulePermissionIndex = ModulePermission.ModulePermissions.IndexOf(item.ChildModuleItems[i].ChildModuleItems[j].ModulePermissions[0]);
+                                    ViewBag.ModulePermissionCount = item.ChildModuleItems[i].ChildModuleItems[j].ModulePermissions.Count;
+                                }
+
+                                if (j > 0)
+                                {
+                                    @Html.Raw("<tr>")
+                                }
+                                <td style="width:12%">@ResourceHelper.GetValue(item.ChildModuleItems[i].ChildModuleItems[j].ResourceKey)</td>
+                                @Html.Partial("_ModulePermission", ModulePermission)
+                                @Html.Raw("</tr>")
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.ModulePermissionCount = 0;
+                            ViewBag.ModuleId = item.ChildModuleItems[i].ModuleId;
+                            if (item.ChildModuleItems[i].ModulePermissions != null && item.ChildModuleItems[i].ModulePermissions.Count > 0)
+                            {
+                                ViewBag.ModulePermissionIndex = ModulePermission.ModulePermissions.IndexOf(item.ChildModuleItems[i].ModulePermissions[0]);
+                                ViewBag.ModulePermissionCount = item.ChildModuleItems[i].ModulePermissions.Count;
+                            }
+
+                            <td colspan="2">@ResourceHelper.GetValue(item.ChildModuleItems[i].ResourceKey)</td>
+                            @Html.Partial("_ModulePermission", ModulePermission)
+                            @Html.Raw("</tr>")
+                        }
+                    }
+                }
+                else
+                {
+                    ViewBag.ModulePermissionCount = 0;
+                    if (item.ModulePermissions != null && item.ModulePermissions.Count > 0)
+                    {
+                        ViewBag.ModulePermissionIndex = ModulePermission.ModulePermissions.IndexOf(item.ModulePermissions[0]);
+                        ViewBag.ModulePermissionCount = item.ModulePermissions.Count;
+                    }
+                    @Html.Partial("_ModulePermission", ModulePermission)
+                    @Html.Raw("</tr>")
+                }
+            }
+            </tbody>
+        </table>
+
+@Html.Hidden("UserIsSiteAdmin", userIsSiteAdmin)
+
+        @Html.ScriptBlock(
+        @<script type="text/javascript">
+            ////forbid filter to support ie7";
+            //function SelectAll(permissionId, ModulePermissionCount) {
+            //    $("#" + permissionId + " input[name*='IsSelected']:checkbox").each(function () {
+            //        $(this).prop("checked", true);                                                                               
+            //    });
+            //    if (ModulePermissionCount>1) {
+                
+            //        var view = $("#" + permissionId).find("input[type=hidden][value=1]");
+            //        var viewInput = view.next().find("input[type=checkbox]");
+            //        viewInput.prop("disabled", "disabled");
+            //    }
+            //}
+
+            //function UnSelectAll(permissionId) {
+            //    $("#" + permissionId + " input[name*='IsSelected']:checkbox").each(function () {
+            //        $(this).prop("checked", false);
+            //    });
+            //    var view = $("#" + permissionId).find("input[type=hidden][value=1]");
+            //    var viewInput = view.next().find("input[type=checkbox]");
+            //    viewInput.prop("disabled", "");
+            //}
+            
+            //auto select view(value = 1) permission when other selected
+            //$(function () {
+            //    $("input[type=checkbox]").change(function () {                    
+            //        var parent = $(this).parent().parent();
+            //        var view = parent.find("input[type=hidden][value=1]");
+            //        var pCount = parent.find("input[type=checkbox]").length;
+            //        var pCountChecked = parent.find("input[type=checkbox]:checked").length;
+            //        if (this.checked) {
+            //            if (view.length > 0) {
+            //                var viewInput = view.next().find("input[type=checkbox]");
+            //                if (viewInput.length > 0 && viewInput[0] != this) {
+            //                    //viewInput[0].checked = true;
+            //                    viewInput.prop("checked", true);
+            //                    if (pCount > 1) {
+            //                        //viewInput[0].disabled = true;
+            //                        viewInput.prop("disabled", "disabled");
+            //                    }
+            //                }
+            //            }
+            //        } else {
+            //            //enable input for view(value = 1)
+            //            var checkedInput = parent.find("input[type=checkbox]:checked");
+            //            if (checkedInput.length == 1) {
+            //                if (view.length > 0) {
+            //                    var viewInput = view.next().find("input[type=checkbox]");
+            //                    if (viewInput.length > 0 && viewInput[0].checked) {
+            //                        //viewInput[0].disabled = false;
+            //                        viewInput.prop("disabled", "");
+            //                    }
+            //                }
+            //            }
+            //        }
+
+            //    });
+            //});
+
+            ////disable input for view(value = 1)
+            //$(function () {
+            //    var td = $("table.role-table td");
+            //    td.each(function () {
+            //        var cehckedInputLength = $(this).find("input[type=checkbox]:checked").length;
+            //        if (cehckedInputLength > 1) {
+            //            var view = $(this).find("input[type=hidden][value=1]");
+            //            if (view.length > 0) {
+            //                var viewInput = view.next().find("input[type=checkbox]");
+            //                if (viewInput.length > 0) {
+            //                    //viewInput[0].disabled = true;
+            //                    viewInput.prop("disabled", "disabled");
+            //                }
+            //            }
+            //        }
+            //    });
+            //});
+
+            var userIsSiteAdmin = $("#UserIsSiteAdmin").val();
+
+            function SelectAll(permissionId, ModulePermissionCount) {
+                $("#" + permissionId + " input[name*='IsSelected']:checkbox").each(function () {
+                    $(this).prop("checked", true);                                                                               
+                });
+                if (ModulePermissionCount>1) {
+                    $("#" + permissionId + " input[name*='ParentValue']").each(function () {
+                        var num = $(this).val();
+                        if (num > 0) {
+                            var parentView = $("#" + permissionId).find("input[type=hidden][value=" + num + "]");
+                            var parentViewInput = parentView.next().find("input[type=checkbox]");
+                            parentViewInput.prop("disabled", "disabled");
+                        }
+                    });
+
+                }
+            }
+
+            function UnSelectAll(permissionId) {
+                $("#" + permissionId + " input[name*='IsSelected']:checkbox").each(function () {
+                    $(this).prop("checked", false);
+                    $(this).prop("disabled", "");
+                });
+            }
+            
+
+            $(function () {
+                $("input[type=checkbox]").change(function () {
+                    var parent = $(this).parent();
+                    var view = parent.find("input[type=hidden]").val();
+                    var pCount = parent.parent().find("input[type=checkbox]").length;
+                    var pCountChecked = parent.parent().find("input[type=checkbox]:checked").length;
+                    if (this.checked) {
+
+                        for (view; view > 0 ; ) {
+                            var parentView = parent.parent().find("input[type=hidden][value=" + view + "]");
+                            var parentviewInput = parentView.next().find("input[type=checkbox]");
+                            var Pview = parentView.next().find("input[name*='ParentValue']").val();
+                            try {
+                                if (parseInt(Pview) >= parseInt(view)) { throw "Err1"; }
+                            } catch (er) {
+                                if (er == "Err1") {
+                                    Messenger.showError("@ResourceHelper.GetValue("Message_RoleInfo_ModuleSettingError")");
+                                    break;
+                                    }
+                            }
+                            if (parentviewInput.length > 0 && parentviewInput[0] != this) {
+
+                                parentviewInput.prop("checked", true);
+                                if (pCount > 1) {
+
+                                    parentviewInput.prop("disabled", "disabled");
+                                }
+                            }
+                            view = Pview;
+                        }
+
+                    } else {
+                        if (view > 0) {
+                            views = $("table.role-table td label").find("input[type=hidden][value=" + view + "]");
+                            var allView = parent.parent().find("input[name*='ParentValue'][value=" + view + "]").next();
+                            var hasChecked = 0;
+                            for (var i = 0; i < allView.length; i++) {  
+                                if (allView[i].checked)
+                                { hasChecked++;}
+                            }
+                            if (views.length > 0 && hasChecked == 0) {
+                                var parentView = parent.parent().find("input[type=hidden][value=" + view + "]");
+                                var parentViewInput = parentView.next().find("input[type=checkbox]");
+                                if (parentViewInput.length > 0 && parentViewInput[0].checked) {
+                                    parentViewInput.prop("disabled", "");
+                                }
+                                if (userIsSiteAdmin == "True" && parent.parent().find("input[name*='ModuleId']").val() == "90300" && view < 16) {
+                                    parentViewInput.prop("disabled", "disabled");
+                                }
+                            }
+                        }
+
+                    }
+                });
+            });
+
+            $(function () {
+                var input = $("table.role-table td  input[name*='ParentValue']");
+                input.each(function () {
+                    var num = $(this).val();
+                    var Pnum = $(this).parent().prev().val();
+                    try {
+                        if (parseInt(num) >= parseInt(Pnum)) {
+                            throw "Err1";
+                        }
+                    } catch (e) {
+                        if (e == "Err1") {
+                            var text = $(this).parent().parent().prev().text();
+                            Messenger.showError(text +" " + "@ResourceHelper.GetValue("Message_RoleInfo_ModuleSettingError")");
+                        }
+                    }
+                    if (num > 0)
+                    {
+                        
+                        var viewInput = $(this).next();
+                        var parentView = $(this).parent().parent().find("input[type=hidden][value=" + num + "]");
+                        var parentViewInput = parentView.next().find("input[type=checkbox]");
+                        if (parentViewInput.length > 0 && parentViewInput[0].checked && viewInput.length > 0 && viewInput[0].checked) {
+                            parentViewInput.prop("disabled", "disabled");
+                        }
+                    }
+                });
+            });
+        </script>
+            )

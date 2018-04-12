@@ -1,0 +1,107 @@
+﻿@model MVC2015.Web.Model.Account.Login.LoginModel
+
+@using MVC2015.Utility.Resource
+@{
+    ViewBag.Title = @ResourceHelper.GetValue("GS_Account_Login_Title");
+}
+<style type="text/css">
+    .middle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 950px;
+        height: 380px;
+        margin-top: -250px;
+        margin-left: -475px;
+    }
+</style>
+
+@Scripts.Render("~/Scripts/md5")
+
+<div class="middle">
+    <div class="container" style="width: 475px;margin:0 auto;">
+        <div style="padding-left:25%;padding-top:5%;">
+            @using (Html.Form("Index", "Login", new { ReturnUrl = Request.QueryString["ReturnUrl"], id = "LoginForm" }, FormMethod.Post, new { id = "LoginForm" }))
+            {
+                <div>
+                    @Html.TextBoxFor(m => m.UserName, new { @id = "txtUserName", @class = "field-input", @style = "height: 40px; font-size: 16px; margin-bottom: 8px;", @placeholder = ResourceHelper.GetValue("Message_Login_UserName"), @autocomplete = "off" })
+                </div>
+                <div>
+                    @Html.PasswordFor(m => m.Password, new { @id = "txtUserPassword", @class = "field-input", @style = "height: 40px; font-size: 16px; margin-bottom: 8px;", @placeholder = ResourceHelper.GetValue("Message_Login_UserPassword"), @autocomplete = "off" })
+                    @Html.HiddenFor(m => m.EncryptPassword, new { id = "hidEncryptPassword" })
+                </div>
+                if (ViewBag.LoginFailTimes != null && ViewBag.LoginFailTimes >= 3)
+                {
+                    <div style="">
+                        @Html.TextBoxFor(m => m.ValidationCode, new { value = "", maxlength = "6", @class = "field-input", @style = "height:40px;font-size:16px;margin-bottom: 8px;", AutoComplete = "off", @placeholder = "验证码" })
+                    </div>
+                    if (Model.ValidationCode == "")
+                    {
+                        <script>$("#ValidationCode").val("");</script>
+                    }
+                    <div class="text-center" style="margin-bottom: 8px; height: 40px;padding-bottom:30px;">
+                        @{
+                    var time = DateTime.Now;
+                    var ts = time.Hour.ToString() + time.Minute.ToString() + time.Second.ToString() + time.Millisecond.ToString();
+                        }
+                        <img id="valiCode" style="cursor: pointer; " src="~/Account/Login/ValidationCode?ts=@ts" onclick="GetNewValidationCode();" />
+                    </div>
+                }
+                else
+                {
+                    <div style="">@Html.TextBoxFor(login => login.ValidationCode, new { @class = "hidden" })</div>
+                }
+
+                <div style="padding-bottom:30px;">
+                    <input style="width: 100%;background-color: #108040;border:0px;color:#fff;height:36px;font-size:16px" type="submit" value="@ResourceHelper.GetValue("Common_Button_Login")" id="btnLogin" />
+                </div>
+                <div style="padding-top:10px;">
+                    <a href="@Url.Action("UserRest", "Login")">@ResourceHelper.GetValue("Message_Login_ForgotPassword")？</a>
+                </div>
+
+                <div style="padding-top:10px;">
+                    @Html.ValidationSummary()
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#txtUserName').val('sysAdmin');
+            $('#txtUserPassword').val('123456');
+            document.onkeydown = function (event) {
+                if (event.keyCode == 13) {
+                    $('#txtUserPassword').focus();
+                    var $form = $("#LoginForm");
+                    var bool = $form.validate().form();
+                    if (bool) {
+                        $form.submit();
+                    }
+                }
+            };
+        });
+
+        $("#btnLogin").click(function () {
+            var vUserPassword = $('#txtUserPassword').val();
+            var vEncryptPassword = $.md5(vUserPassword);
+            $('#hidEncryptPassword').val(vEncryptPassword);
+            $('#txtUserPassword').val(vEncryptPassword.substr(0, vUserPassword.length));
+        });
+
+        function GetNewValidationCode() {
+            var time = new Date();
+            var ts = time.getHours().toString() + time.getMinutes().toString() + time.getSeconds().toString() + time.getMilliseconds().toString();
+            var url = '@Url.Action("ValidationCode", "Login")';
+            var url = url + "?ts=" + ts;
+            $("#valiCode").attr("src", url);
+            var a = $("#ValidationCode").val("");
+        }
+    </script>)
+
+

@@ -1,0 +1,125 @@
+﻿@using System.Web.UI.WebControls;
+@using MVC2015.Web;
+@using MVC2015.Web.Model.Common;
+@using MVC2015.Web.Model.KeyValue;
+@using MVC2015.Utility.Resource;
+@using MVC2015.Web.Site.Common;
+
+@{
+    string datetimeFormate = ViewBag.DisplayDate;
+    DevexpressGridViewSettings gridSettings = new DevexpressGridViewSettings("gvRoleInfo");
+    var settings = gridSettings.Settings();
+    settings.KeyFieldName = "RoleID";
+    settings.CallbackRouteValues = new { Controller = "RoleInfo", Action = "GridView" };
+    settings.ClientSideEvents.BeginCallback = "OnBeginCallback";
+
+
+    settings.Columns.Add("Name", ResourceHelper.GetValue("SM_RoleInfo_RoleName")).Width = Unit.Percentage(20);
+    settings.Columns.Add("Description", ResourceHelper.GetValue("SM_RoleInfo_RoleDescription")).Width = Unit.Percentage(20);
+
+    //创建时间
+    DevExpress.Web.Mvc.MVCxGridViewColumn colCreateDate = new DevExpress.Web.Mvc.MVCxGridViewColumn();
+    colCreateDate.ColumnType = DevExpress.Web.Mvc.MVCxGridViewColumnType.DateEdit;
+    colCreateDate.PropertiesEdit.DisplayFormatString = datetimeFormate;
+    colCreateDate.FieldName = "CreatedDate";
+    colCreateDate.Caption = ResourceHelper.GetValue("SM_RoleInfo_CreatedDate");
+    colCreateDate.Width = Unit.Percentage(15);
+    colCreateDate.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    DevExpress.Web.ASPxEditors.DateEditProperties requestDateStrprops = colCreateDate.PropertiesEdit as DevExpress.Web.ASPxEditors.DateEditProperties;
+    requestDateStrprops.EditFormatString = datetimeFormate;
+    settings.Columns.Insert(2, colCreateDate);
+    //操作
+    bool hasEdit = PermissionHelper.CheckPermission("SystemMaint", "RoleInfo", "Edit");
+    bool hasDelete = PermissionHelper.CheckPermission("SystemMaint", "RoleInfo", "Delete");
+    var siteAdminName = MVC2015.Web.Model.Common.EnumRole.SiteAdmin.ToString();
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "RoleID";
+        column.Settings.AutoFilterCondition = DevExpress.Web.ASPxGridView.AutoFilterCondition.Equals;
+        column.Caption = ResourceHelper.GetValue("Common_PageList_Action");
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Width = Unit.Percentage(10);
+        column.Settings.AllowAutoFilter = DevExpress.Utils.DefaultBoolean.False;
+        column.Settings.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+        column.SetDataItemTemplateContent(c =>
+        {
+            int Id = (int)DataBinder.Eval(c.DataItem, "RoleID");
+            string Name = (string)DataBinder.Eval(c.DataItem, "Name");
+
+
+            //明细
+            ViewContext.Writer.Write(
+            Html.ActionLink(" ", "", "",
+            new
+            {
+                id = Id
+            },
+            new { onclick = "showDetail('" + Id + "'); return false;", @class = "grid-btn2", style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-detail.png") + "');", title = ResourceHelper.GetValue("Common_Page_Detail") })
+             );
+            //修改
+            if (hasEdit)
+            {
+                ViewContext.Writer.Write(
+                Html.ActionLink(" ", "", "",
+                new
+                {
+                    id = Id
+                },
+                new { onclick = "showEditDialog('" + Id + "'); return false;", @class = "grid-btn2", style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-edit.png") + "');", title = ResourceHelper.GetValue("Common_Page_Edit") })
+                 );
+            }
+            //删除
+            if (hasDelete && Name != siteAdminName)
+            {
+                ViewContext.Writer.Write(
+                Html.ActionLink(" ", "", "",
+                new
+                {
+                    id = Id
+                },
+                new { onclick = "deleteRole('" + Id + "','" + Html.Encode(Name) + "'); return false;", @class = "grid-btn2", style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-delete.png") + "');", title = ResourceHelper.GetValue("Common_Page_Delete") })
+                 );
+            }
+
+
+
+        });
+    });
+    var gridView1 = Html.DevExpress().GridView(settings);
+
+}
+@gridView1.BindToEF(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "RoleID";
+}).GetHtml()
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+
+
+    function showDetail(id) {
+        showModal("#normal-modal", "@ResourceHelper.GetValue("SM_RoleInfo_Detail_Title")", "@Url.Action("GetDetail", "RoleInfo")?id=" + id);
+    }
+
+
+    function showEditDialog(id) {
+        location.href = "@Url.Action("Edit", "RoleInfo")" + "?id=" + id;
+    }
+    function deleteRole(Id, Name) {
+        var url = "@Url.Action("Delete", "RoleInfo")" + "?id=" + Id;
+        @*commonDelete("@ResourceHelper.GetValue("Message_Common_ConfirmDelete"):" + Name + "?", url, function (message) {
+                gvRoleInfo.Refresh();
+                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_DeleteSuccessful")");
+            });*@
+        commonDelete("@ResourceHelper.GetValue("Message_Common_ConfirmDeletion")".replace("{0}", "@ResourceHelper.GetValue("SM_RoleInfo")"+"\"" + Name + "\""), url, function (message) {
+            if (message == "exist") {
+                Messenger.showError("@ResourceHelper.GetValue("Message_RoleInfo_DeleteExist")".replace("{0}", "@ResourceHelper.GetValue("SM_RoleInfo")"+"\"" + Name + "\""));
+            } else {
+                gvRoleInfo.Refresh();
+                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_DeleteSuccessful")");
+            }
+        });
+    }
+</script>
+
+            )

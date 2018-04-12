@@ -1,0 +1,154 @@
+﻿@using MVC2015.Web.Model.Account.Login;
+@using MVC2015.Utility.Resource
+@model MVC2015.Web.Model.Account.ForgetModel
+@{
+    ViewBag.Title = @ResourceHelper.GetValue("GS_Account_UserRest");
+}
+<form data-event="{submit:'reset'}" id="userRestForm">
+    @*method="post"*@
+    <div class="container" style="margin:auto;padding-top:10%;">
+        <div class="row section-head">
+            <div class="section-title">
+                @ResourceHelper.GetValue("GS_Account_UserRest")
+            </div>
+        </div>
+        <div class="titlemenu">
+            @*<input id="reset" type="submit" value="@ResourceHelper.GetValue("Common_Button_ResetPassword")" onclick="sendEmail()"/>*@
+            <input type="button" value="@ResourceHelper.GetValue("Common_Button_ResetPassword")" id="btnSend" onclick="sendEmail()" />
+            <a href="@Url.Action("Index", "Login")" class="abtn">@ResourceHelper.GetValue("Common_Button_Return")</a>
+        </div>
+        <div style="margin-left:auto;margin-right:auto;">
+            <div class="row field-row">
+                <div class="col-md-3 field-title">
+                    <span style="color:red">*</span>@ResourceHelper.GetValue("SM_UserInfo_UserName")：@*@Html.HiddenFor(m => m.UserName)*@
+                </div>
+                <div class="col-md-3 field-content">
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "field-input" })
+                </div>
+            </div>
+            <div class="row field-row">
+                <div class="col-md-3 field-title">
+                    <span style="color:red">*</span>@ResourceHelper.GetValue("SM_UserInfo_EmailAddress")：@*@Html.HiddenFor(m => m.Email)*@
+                </div>
+                <div class="col-md-3 field-content">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "field-input" })
+                    @*<input type="text" />*@
+                </div>
+            </div>
+
+            <div class="row" id="validasummer">
+                @Html.ValidationSummary()
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function sendEmail() {
+        //var s = $('form').valid();
+        //return;
+        flesh();
+        var userName = $("#UserName").val();
+        var email = $("#Email").val();
+        var url = "@Url.Action("UserRests", "Login")";
+        var bool = $("#userRestForm").validate().form();
+        if (bool) {
+            $.ajax({
+                url: url,
+                dataType: "json",
+                type: "Post",
+                data:{"Email":email,"UserName":userName},
+                //beforeSend: function () {
+                //    showLoading();
+                //},
+                success: function (data) {
+                    if (data == "Emailinput") {
+                        Messenger.showError("@ResourceHelper.GetValue("SMM_UserInfo_InputEmailAddress")");
+                    } else if (data == "validateEmail") {
+                        Messenger.showError("@ResourceHelper.GetValue("SMM_UserInfo_WrongUserNameOrEmailAddress")");
+                    } else if (data == "error") {
+                        Messenger.showError("@ResourceHelper.GetValue("SMM_UserInfo_WrongUserNameOrEmailAddress")");
+                    } else if (data == "false") {
+                        Messenger.showError("@ResourceHelper.GetValue("SMM_UserInfo_Error")");
+                    }else if (data=="true"){
+                        Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_ResetPasswordSuccessful")",gotoUrl("@Url.Action("Index", "Home", new { area = "" })"));
+                    }
+                },
+                error: function () {
+                    Messenger.showError("@ResourceHelper.GetValue("SMM_UserInfo_Error")");
+                },
+                complete: function () {
+                    //hideLoading();
+                }
+            });
+        }
+    }
+
+    function flesh() {
+        var str="<div class="+"validation-summary-valid"+" data-valmsg-summary="+"true"+"><ul><li style="+"display:none;"+"/></ul></div>"
+        $("#validasummer").html(str);
+    }
+    /*
+    (function ($) {
+        var classes = { groupIdentifier: ".form-group", error: 'has-error', success: null };//success: 'has-success'
+        function updateClasses(inputElement, toAdd, toRemove) {
+            var group = inputElement.closest(classes.groupIdentifier);
+            if (group.length > 0) {
+                group.addClass(toAdd).removeClass(toRemove);
+            }
+        }
+        function onError(inputElement, message) {
+            /*
+            updateClasses(inputElement, classes.error, classes.success);
+
+            var options = { html: true, title: '<div class="tooltip-alert alert-danger">' + message + '</div>' };
+            inputElement.tooltip("destroy")
+                .addClass("error")
+                .tooltip(options);
+
+            var container = $("[data-valmsg-summary=true]"),
+                list = container.find("ul");
+
+            if (list && list.length) {
+                //list.empty();
+                container.addClass("validation-summary-errors").removeClass("validation-summary-valid");
+
+
+                var li = $("<li />").html(message).appendTo(list);
+                li.attr("data-valmsg-for", inputElement[0].name);
+                li.attr("data-valmsg-replace", true);
+
+            }
+        }
+        function onSuccess(inputElement) {
+            /*
+            updateClasses(inputElement, classes.success, classes.error);
+            inputElement.tooltip("destroy");
+
+            $.each(inputElement, function(){
+                var errorLi = $("[data-valmsg-summary=true]").find('li[data-valmsg-for=' + this.id + ']');
+                errorLi.remove();
+            });
+
+        }
+
+        function onValidated(errorMap, errorList) {
+            $.each(errorList, function () {
+                onError($(this.element), this.message);
+            });
+
+            if (this.settings.success) {
+                $.each(this.successList, function () {
+                    onSuccess($(this));
+                });
+            }
+        }
+
+        $(function () {
+            $('form').each(function () {
+                var validator = $(this).data('validator');
+                validator.settings.showErrors = onValidated;
+            });
+        });
+    }(jQuery));
+    */
+</script>

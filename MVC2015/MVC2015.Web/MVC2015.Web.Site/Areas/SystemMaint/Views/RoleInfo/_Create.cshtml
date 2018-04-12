@@ -1,0 +1,386 @@
+﻿@using MVC2015.Web.Model.SystemMaint.RoleInfo
+@using MVC2015.Web.Site.Common
+@using MVC2015.Utility.Resource
+@model RoleInfoItem
+@{
+    ViewBag.ShowSubmit = true;
+}
+
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_RoleInfo_Create_Title")
+    </h2>
+</div>
+
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_RoleInfo_BasicInfo")
+    </div>
+</div>
+<div class="titlemenu">
+    <input type="button" value="@ResourceHelper.GetValue("Common_Button_Save")" id="btnSave" />
+    <a href="@Url.Action("Index", "RoleInfo")" class="abtn">@ResourceHelper.GetValue("Common_Button_Return")</a>
+</div>
+@using (@Html.Form("Create", "RoleInfo", new { RoleId = Model.RoleId }, System.Web.Mvc.FormMethod.Post, new { id = "createRoleForm" }))
+{
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_RoleInfo_RoleName")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.Name, new { @class = "field-input" })
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_RoleInfo_RoleDescription"):
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.Description, new { @class = "field-input" })
+        </div>
+    </div>
+    
+    <div class="row section-head">
+        <div class="section-title">
+            @ResourceHelper.GetValue("SM_RoleInfo_Permission")
+        </div>
+    </div>
+    <div class="row">
+        @Html.ValidationSummary()
+    </div>
+}
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        function gotourl() {
+            location.href = "@Url.Action("Index","RoleInfo")";
+        }
+
+        $(function () {
+            $('#btnSave').bind('click', function () {
+                var $form = $("#createRoleForm");
+                var bool = $form.validate().form();
+                if (bool) {
+                    $.ajax({
+                        url: $form.attr("action"),
+                        dataType: "html",
+                        data: $form.serialize(),
+                        type: "POST",
+                        beforeSend: showLoading(),
+                        success: function (data) {
+                            if (data == "Success") {
+
+                                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_AddSuccessful")", gotourl);
+                            } else {
+                                Messenger.showError(data);
+                                //$("#createRoleForm").html(data);
+                            }
+                        },
+                        error: function () {
+                            buildError()
+                        },
+                        complete: function () {
+                            hideLoading()
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+                            )
+<style>
+    .role-c {
+        border-bottom: 1px solid #CFCFCF;
+        border-right: 1px solid #CFCFCF;
+        height: 60px;
+        text-align: center;
+        width: 100%;
+        /*padding: 3px 10px;*/
+        display: table;
+    }
+
+    .role-c-h2 {
+        height: 120px;
+    }
+
+    .role-c-h3 {
+        height: 180px;
+    }
+
+    .role-c-h4 {
+        height: 240px;
+    }
+
+    .role-c-h5 {
+        height: 300px;
+    }
+
+    .role-c-h6 {
+        height: 360px;
+    }
+
+    .role-c-h7 {
+        height: 420px;
+    }
+
+    .role-c-h8 {
+        height: 480px;
+    }
+
+    .role-c-h9 {
+        height: 540px;
+    }
+
+    .role-c-h10 {
+        height: 600px;
+    }
+
+    .role-c div {
+        padding: 0px 5px;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .role-c input[type='button'] {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .role-main > div {
+        float: left;
+    }
+
+    .role-c1 {
+        width: 100px;
+    }
+
+    .role-c2 {
+        width: 100px;
+    }
+
+    .role-c3 {
+        width: 100px;
+    }
+
+    .role-c4 {
+        width: 460px;
+    }
+
+        /*checkboxes*/
+        .role-c4 div {
+            float: left;
+        }
+
+        .role-c4 label {
+            display: inline-block;
+        }
+
+    .role-c5 {
+        width: 210px;
+    }
+
+    .role-no-child {
+        border-right: none;
+    }
+
+    .role-main:first-child > .role-c1 > .role-c:first-child {
+        border-top: 1px solid #CFCFCF;
+    }
+
+    div.role-c1 > .role-c:first-child {
+        border-left: 1px solid #CFCFCF;
+    }
+
+    .role-main:first-child > div.role-c2 > div.role-c:first-child,
+    .role-main:first-child > div.role-c3 > div.role-c:first-child,
+    .role-main:first-child > div.role-c4 > div.role-c:first-child,
+    .role-main:first-child > div.role-c5 > div.role-c:first-child {
+        border-top: 1px solid #CFCFCF;
+    }
+</style>
+
+<div style="padding-top:100px;display:none;" class="role">
+    @* Module 1 *@
+    <div class="role-main">
+        @* Level 1 Function *@
+        <div class="role-c1 "><div class=" role-c role-c-h3"><div>@ResourceHelper.GetValue("SM_RoleInfo_GSInfo")</div></div></div>
+        @* Level 2 Function *@
+        <div class="role-c2 ">
+            <div class=" role-c role-c-h2"><div>@ResourceHelper.GetValue("SM_RoleInfo_GSBasicInfo")</div></div>
+            <div class=" role-c role-no-child"><div>@ResourceHelper.GetValue("SM_RoleInfo_SaleRecord")</div></div>
+        </div>
+        @* Level 3 Function *@
+        <div class="role-c3 ">
+            <div class=" role-c">
+                <div>@ResourceHelper.GetValue("SM_RoleInfo_Job")</div>
+            </div>
+            <div class=" role-c">
+                <div>@ResourceHelper.GetValue("SM_RoleInfo_POS")</div>
+            </div>
+            <div class=" role-c">
+                <div></div>
+            </div>
+        </div>
+        @* Function Details *@
+        <div class="role-c4 ">
+            <div class=" role-c">
+                <div>
+                    <input type="checkbox" id="m_10101_4" />
+                    <label for="m_10101_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_8" />
+                    <label for="m_10101_8">update</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_4" />
+                    <label for="m_10101_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_8" />
+                    <label for="m_10101_8">update</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_4" />
+                    <label for="m_10101_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_8" />
+                    <label for="m_10101_8">update</label>
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="checkbox" id="m_10102_4" />
+                    <label for="m_10102_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10102_8" />
+                    <label for="m_10102_8">update</label>
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="checkbox" id="m_10103_4" />
+                    <label for="m_10103_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10103_8" />
+                    <label for="m_10103_8">update</label>
+                </div>
+            </div>
+        </div>
+        @* Toggle Full Auth *@
+        <div class="role-c5 ">
+            <div class=" role-c">
+                <div>
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_AllPermission")" />
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_NoPermission")" />
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_AllPermission")" />
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_NoPermission")" />
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_AllPermission")" />
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_NoPermission")" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Module 2 *@
+    <div class="role-main">
+        @* Level 1 Function *@
+        <div class="role-c1 "><div class=" role-c" style="height:180px;"><div>@ResourceHelper.GetValue("SM_RoleInfo_GSBasicInfo")</div></div></div>
+        @* Level 2 Function *@
+        <div class="role-c2 ">
+            <div class=" role-c" style="height:120px;"><div>@ResourceHelper.GetValue("SM_RoleInfo_GSBasicInfo")</div></div>
+            <div class=" role-c role-no-child"><div>@ResourceHelper.GetValue("SM_RoleInfo_SaleRecord")</div></div>
+        </div>
+        @* Level 3 Function *@
+        <div class="role-c3 ">
+            <div class=" role-c">
+                <div>@ResourceHelper.GetValue("SM_RoleInfo_Job")</div>
+            </div>
+            <div class=" role-c">
+                <div>@ResourceHelper.GetValue("SM_RoleInfo_POS")</div>
+            </div>
+            <div class=" role-c">
+                <div></div>
+            </div>
+        </div>
+        @* Function Details *@
+        <div class="role-c4 ">
+            <div class=" role-c">
+                <div>
+                    <input type="checkbox" id="m_10101_4" />
+                    <label for="m_10101_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_8" />
+                    <label for="m_10101_8">update</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_4" />
+                    <label for="m_10101_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_8" />
+                    <label for="m_10101_8">update</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_4" />
+                    <label for="m_10101_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10101_8" />
+                    <label for="m_10101_8">update</label>
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="checkbox" id="m_10102_4" />
+                    <label for="m_10102_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10102_8" />
+                    <label for="m_10102_8">update</label>
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="checkbox" id="m_10103_4" />
+                    <label for="m_10103_4">add</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="m_10103_8" />
+                    <label for="m_10103_8">update</label>
+                </div>
+            </div>
+        </div>
+        @* Toggle Full Auth *@
+        <div class="role-c5 ">
+            <div class=" role-c">
+                <div>
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_AllPermission")" />
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_NoPermission")" />
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_AllPermission")" />
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_NoPermission")" />
+                </div>
+            </div>
+            <div class=" role-c">
+                <div>
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_AllPermission")" />
+                    <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_NoPermission")" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

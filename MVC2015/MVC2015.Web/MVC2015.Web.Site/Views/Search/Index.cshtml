@@ -1,0 +1,30 @@
+﻿@*@using VM = MVC2015.Web.Model.SystemMaint.FullTextSearch;
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@model VM.SearchModel*@
+
+    <h2>Search Index</h2>
+    @using (Html.BeginForm("index", "Search", System.Web.Mvc.FormMethod.Post))
+    {
+        @Html.TextBox("tbWord")<input type="submit" value="Search" />@Html.ActionLink("Create Index", "CreateIndex")
+        <table style="width:100%;">
+            <tr>
+                <td>ID</td>
+                <td>Title</td>
+                <td>Content</td>
+            </tr>
+
+            @*@if (Model != null)
+            {
+                foreach (VM.SearchModel item in Model)
+                {
+                    <tr>
+                        <td>@item.ID</td>
+                        <td>@item.Title</td>
+                        <td>@Html.Raw(item.Contents)</td>
+                    </tr>
+                }
+            }*@
+        </table>
+    }

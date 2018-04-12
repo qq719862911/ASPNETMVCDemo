@@ -1,0 +1,70 @@
+﻿@using System.Web.UI.WebControls;
+@using MVC2015.Utility.Resource
+@using MVC2015.Web.Site.Common
+
+@{
+    var guid = ViewData["Guid"];
+}
+<div class="col-md-8 field-content">
+    @Html.DevExpress().UploadControl(settings =>
+    {
+        settings.Name = "FileUploadControl";
+        settings.CallbackRouteValues = new { Controller = "FileUpload", Action = "UploadFile", guid = guid};
+        settings.ClientSideEvents.FileUploadComplete = "function(s, e){ UploadFileComplete(s, e);}";
+        settings.ShowAddRemoveButtons = false;
+        settings.ShowUploadButton = false;
+        settings.ShowProgressPanel = false;
+        settings.ValidationSettings.Assign(UploadHelper.CommonUploadValidationSettings);
+        settings.BrowseButton.Text = ResourceHelper.GetValue("Common_Button_Browse");
+        settings.Width = 590;
+    }).GetHtml()
+   
+</div>
+<div class="col-md-4 field-content">
+    <input type="button" value="@ResourceHelper.GetValue("Common_Button_Upload")" onclick="UploadFile('FileUploadControl', '@guid');" />
+</div>
+
+@Html.ScriptBlock(
+@<script type="text/javascript">
+    
+    $(document).ready(function () {
+        var inputsTable = $("#FileUploadControl_UploadInputs");
+        var trs = inputsTable.find("tr");
+        var tr = trs.eq(trs.length - 2);
+        var tds = tr.find("td");
+        var descInput = $("<input id=\"fileDesc\" name = \"fileDesc\"/>");  //描述最大长度为200
+        var newTd = $("<td class='file-desc' style=\"padding:0px 0px 0px 15px;\"></td>").html("<span style=\"font-size: 14px;\">@ResourceHelper.GetValue("SM_FileUpload_Description")：</span>").append(descInput);
+        tr.append(newTd);
+    })
+
+    function UploadFile(uploadControlName, guid) {
+        debugger;
+        postDescription(uploadControlName, guid);
+    }
+
+    function postDescription(uploadControlName, guid) {
+        var description = $("#fileDesc").val();
+        var url = "@Url.Action("PostAttachmentDescription", "FileUpload")";
+        $.ajax({
+            url: url,
+            dataType: "html",
+            data: { guid: guid, fileDesc: description },
+            type: "POST",
+            success: function (data) {
+                var uploadFiles = uploadControlName + ".Upload()";
+                eval(uploadFiles);
+            },
+            error: function () {
+                buildError()
+            },
+            complete: function () {
+            }
+        });
+    }
+
+    function UploadFileComplete(s, e, callback) {
+        gvFileUpload.Refresh();
+        $("#fileDesc").val("");
+    }
+    </script>
+)

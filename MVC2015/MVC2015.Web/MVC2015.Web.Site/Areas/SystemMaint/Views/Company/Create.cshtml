@@ -1,0 +1,97 @@
+﻿@using MVC2015.Web;
+@using MVC2015.Web.Site.Common
+@using MVC2015.Utility.Resource;
+@model MVC2015.Web.Model.SystemMaint.Company.CompanyModel
+@{
+    ViewBag.Title = ResourceHelper.GetValue("Common_DialogAdd_Title", "SM_Company");
+    ViewBag.ShowSubmit = true;
+}
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("Common_DialogAdd_Title", "SM_Company")
+    </h2>
+</div>
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_Company", "Common_Page_Detail")
+    </div>
+</div>
+@using (@Html.Form("Create", "Company", new { ID = Model.ID }, FormMethod.Post, new { id = "companyForm" }))
+{
+    <div class="row">
+        <div class="titlemenu">
+            <input type="button" aria-hidden="true" id="btnSubmit" value="@ResourceHelper.GetValue("Common_Button_Save")" />
+            <a class="abtn" href="@Url.Action("index", "Company")">@ResourceHelper.GetValue("Common_Button_Return")</a>
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_Company_Name")：@*@Html.HiddenFor(m => m.ID)*@
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.Name, new { @class = "field-input" })
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_Company_Code")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.Code, new { @class = "field-input" })
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_Company_Description")：
+        </div>
+        <div class="col-md-5 field-content">
+            @Html.TextAreaFor(m => m.Description, new { @class = "field-input", rows = 2, cols = 100, maxlength = 200 })
+        </div>
+    </div>
+    
+   
+    <div class="row">
+        @Html.ValidationSummary()
+    </div>
+}
+@*@Html.Partial("_NormalModal")
+<div data-element="popout-UserListInfo">
+    @Html.Partial("_FormModal")
+</div>*@
+
+
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        $(function () {
+            $('#btnSubmit').bind('click', function () {
+                var $form = $("#companyForm");
+                var bool = $form.validate().form();
+                if (bool) {
+                    $.ajax({
+                        url: $form.attr("action"),
+                        dataType: "html",
+                        data: $form.serialize(),
+                        type: "POST",
+                        beforeSend: showLoading(),
+                        success: function (data) {
+                            //debugger
+                            if (data == "Success") {
+                                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_AddSuccessful")",
+                                    gotoUrl("@Url.Action("Index", "Company", new { area = "SystemMaint" })"));
+                            } else {
+                                //$("#companyForm").html(data);
+                                Messenger.showError(data);
+                            }
+                        },
+                        error: function (data) {
+                            buildError()
+                        },
+                        complete: function () {
+                            hideLoading()
+                        }
+                    });
+                }
+            });
+        });
+
+</script>)

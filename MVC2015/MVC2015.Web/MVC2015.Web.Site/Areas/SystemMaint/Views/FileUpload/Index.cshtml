@@ -1,0 +1,40 @@
+﻿@using MVC2015.Web.Site
+@using MVC2015.Web.Model.SystemMaint.FileUpload
+@using MVC2015.Utility.Resource
+
+@model FileModel
+@{
+    ViewBag.Title = "File Upload";
+    var guid = ViewData["Guid"].ToString();
+}
+
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_FileUpload_Page")
+    </h2>
+</div>
+
+<!-- 附件 -->
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_FileUpload_Page")
+    </div>
+</div>
+<div class="row field-row">
+@using (@Html.Form("Create", "FileUpload", FormMethod.Post, new { id = "FileUploadForm" }))
+{
+    @Html.Partial("_FileUpload", new ViewDataDictionary { { "Guid", guid } })
+}
+</div>
+
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_FileUpload_List")
+    </div>
+</div>
+<div class="row field-row">
+    @Html.Partial("_FileList", Model.List)
+</div>
+
+
+

@@ -1,0 +1,67 @@
+﻿@using MVC2015.Web;
+@using MVC2015.Utility.Resource;
+@using VM = MVC2015.Web.Model.SystemMaint.Module;
+@model VM.ModuleItem
+
+@{
+   
+    int ModulePermissionCount = ViewBag.ModulePermissionCount;
+    int ModulePermissionIndex = ViewBag.ModulePermissionIndex;     
+    int count = ModulePermissionIndex + ModulePermissionCount;
+    int ModuleId = ViewBag.ModuleId;
+    string RoleName = ViewBag.RoleName;
+    var siteAdminName = MVC2015.Web.Model.Common.EnumRole.SiteAdmin.ToString();
+}
+@if (RoleName == siteAdminName && ModuleId == 90300)
+{
+    <td id="permission_@ModulePermissionIndex">
+        @for (int i = ModulePermissionIndex; i < count; i++)
+        {
+            @Html.HiddenFor(m => m.ModulePermissions[i].Id)
+            @Html.HiddenFor(m => m.ModulePermissions[i].ModuleId)
+            @Html.HiddenFor(m => m.ModulePermissions[i].Value)
+            if(Model.ModulePermissions[i].Value < 16)
+            {
+                <label style="font-size: inherit; font-weight: inherit;margin-right:5px;" class="checkbox-inline">
+                    @Html.HiddenFor(m => m.ModulePermissions[i].ParentValue)
+                    @Html.CheckBoxFor(m => m.ModulePermissions[i].IsSelected, new { title = ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey), disabled = "disabled" })
+                    @ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey)
+                </label>
+            }
+            else
+            {
+                
+                <label style="font-size: inherit; font-weight: inherit;margin-right:5px;" class="checkbox-inline">
+                    @Html.HiddenFor(m => m.ModulePermissions[i].ParentValue)
+                    @Html.CheckBoxFor(m => m.ModulePermissions[i].IsSelected, new { title = ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey)})
+                    @ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey)
+                </label>
+            }
+        }
+    </td>
+    <td align="center" style="width:20%;">
+    </td>
+}
+else
+{
+    <td id="permission_@ModulePermissionIndex">
+        @for (int i = ModulePermissionIndex; i < count; i++)
+        {
+            @Html.HiddenFor(m => m.ModulePermissions[i].Id)
+            @Html.HiddenFor(m => m.ModulePermissions[i].ModuleId)
+            @Html.HiddenFor(m => m.ModulePermissions[i].Value)
+            <label style="font-size: inherit; font-weight: inherit;margin-right:5px;" class="checkbox-inline">
+                @Html.HiddenFor(m => m.ModulePermissions[i].ParentValue)
+                @Html.CheckBoxFor(m => m.ModulePermissions[i].IsSelected, new { title = ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey) })
+                @ResourceHelper.GetValue(Model.ModulePermissions[i].ResourceKey)
+            </label>
+        }
+    </td>
+    <td align="center" style="width:20%;">
+        @if (count > ModulePermissionIndex)
+        {
+            <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_AllPermission")" onclick="SelectAll('permission_@ModulePermissionIndex',@ModulePermissionCount);" />
+            <input type="button" value="@ResourceHelper.GetValue("SM_RoleInfo_NoPermission")" onclick="UnSelectAll('permission_@ModulePermissionIndex');" />
+        }
+    </td>
+}

@@ -1,0 +1,401 @@
+﻿@using System.Web.UI.WebControls;
+@using MVC2015.Web;
+@using MVC2015.Web.Model.Common;
+@using MVC2015.Web.Site.Common;
+@using MVC2015.Utility.Resource;
+@using VM = MVC2015.Web.Model.SystemMaint.UserInfo;
+@*@model List<VM.UserInfoItem>*@
+@*@model IQueryable<VM.UserInfoItem>*@
+@{
+    int currRoleId = ViewBag.RoleId;
+    var hasEdit = PermissionHelper.CheckPermission("SystemMaint", "RoleInfo", "GetAllUserItem");
+}
+
+
+@if (hasEdit)
+{
+    <div class="titlemenu">
+        <input type="button" class="" value="@ResourceHelper.GetValue("Common_Page_Add")" onclick="pullUpUser(@currRoleId);" style="float: right;" />
+    </div>
+}
+
+<style>
+    .empty {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+</style>
+
+<div class="userList" style="max-height: 360px;overflow:auto; word-break:break-all;">
+    <table class="grid">
+        <thead>
+            <tr>
+                <th width=20%>
+                    @ResourceHelper.GetValue("SM_UserInfo_LogonName")
+                </th>
+                <th width=20%>
+                    @ResourceHelper.GetValue("SM_UserInfo_UserName")
+                </th>
+                <th width=30%>
+                    @ResourceHelper.GetValue("SM_Company")
+                </th>
+                <th width=20%>
+                    @ResourceHelper.GetValue("SM_UserInfo_RoleName")
+                </th>
+                @if (hasEdit)
+                {
+                    <th width=10%>
+                        @ResourceHelper.GetValue("Common_PageList_Action")
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody id="userList">
+            @{
+                var i = 0;
+                var currUserIds = string.Empty;
+                MVC2015.Web.BusinessLogic.SystemMaint.Company comBL = new MVC2015.Web.BusinessLogic.SystemMaint.Company();
+                foreach (var user in Model)
+                {
+                    int j = 0;
+                    string userCompanyName = string.Empty;
+                    var companyList = comBL.GetCompanyListByUserId(user.UserId);
+                    foreach (var company in companyList)
+                    {
+                        if (j > 0)
+                        {
+                            userCompanyName += ", " + company.Name;
+                        }
+                        else
+                        {
+                            userCompanyName += company.Name;
+                        }
+                        j++;
+                    }
+                    var rowClass = "gridrow";
+                    i++;
+                    if (i % 2 != 0) { rowClass = "gridrow_alternate"; }
+                    <tr id="@user.UserId" class="@rowClass">
+                        <td>
+                            @user.LogonName
+                        </td>
+                        <td>
+                            @user.UserName
+                        </td>
+                        <td>
+                            @userCompanyName
+                        </td>
+                        <td>
+                            @user.RoleName
+                        </td>
+                        @if (hasEdit)
+                        {
+                            <td align="center">
+                                <a class="grid-btn2" href="" onclick="deleteUserRole(this, @user.UserId); return false;"
+                                   style="margin-left: 5px; color: transparent; background-image:url(@Url.Content("~/Images/Icon/g-delete.png") ); "
+                                   title=" @ResourceHelper.GetValue("Common_Page_Delete") "></a>
+                            </td>
+                        }
+                    </tr>
+                        currUserIds += user.UserId + ",";
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div class="empty">
+
+</div>
+<div id="userItemsWrap" style="display:none;">
+
+</div>
+@Html.Hidden("displayList", currRoleId)
+@Html.Hidden("currRole", currRoleId)
+@Html.Hidden("currUserIds", currUserIds)
+@Html.Hidden("PrimaryUserIds", currUserIds)
+@Html.Hidden("DeleteUserIds")
+@Html.Hidden("AllSelectList", currUserIds)
+
+
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+
+        Array.prototype.remove = function (value) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == value) {
+                    this.splice(i, 1);
+                }
+            }
+        }
+        Array.prototype.contain = function (value) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == value) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        var tempRemove = [];
+        var tempAdd = [];
+        var tempdeleteUserIds = [];
+        var currUserIds = $("#currUserIds").val();
+        var currSelectIds = $("#currUserIds").val().split(",");
+        var userItemsWrap = $("#userItemsWrap");
+
+        $(function () {
+            $('#NormalSave').bind('click', function () {
+                var $form = $("#UserSelectForm");
+                var $table = $("#userListSelect");
+                var bool = true;
+                var $input = $table.find("input:checked");
+                var count = $input.length;
+                var currCompanyId = $("#currCompany").val();
+                var currSelectIds = $("#currUserIds").val().split(",");
+
+                // 1 add real new to list
+                $("#userList").append(userItemsWrap.children());
+                // 2 remove real delete
+                for (var i = 0; i < userItemsWrapRemove.length; i++) {
+                    $("#userList #" + userItemsWrapRemove[i]).remove();
+                }
+
+                for (var i = 0; i < tempAdd.length; i++) {
+                    currSelectIds.push(tempAdd[i]);
+                }
+
+                for (var i = 0; i < tempRemove.length; i++) {
+                    currSelectIds.remove(tempRemove[i]);
+                }
+
+                currUserIds = currSelectIds.join(",");
+                $("#currUserIds").val(currUserIds);
+                $("#AllSelectList").val(currUserIds);
+                var userGrid = $(".grid");
+                refreshGridCss(userGrid);
+                tempAdd = [];
+                tempRemove = [];
+                userItemsWrapRemove = [];
+                userItemsWrap.empty();
+
+            });
+        });
+
+        function check(check, userId, logonName, userName, companyName, roleName) {
+            currSelectIds = $("#currUserIds").val().split(",");
+            var oldSelectIds = $("#AllSelectList").val().split(",");
+            if (check.checked) {                       // check
+                if (currSelectIds.contain(userId)) {
+                    tempRemove.remove(userId);
+                } else {
+                    tempRemove.remove(userId);
+                    tempAdd.push(userId);
+                }
+
+                if (oldSelectIds.contain(userId)) {
+                    userItemsWrapRemove.remove(userId);
+                } else {
+                    var userItemTr = $("<tr id='" + userId + "'></tr>");
+                    var userTd1 = $("<td>" + logonName + "</td>");
+                    var userTd2 = $("<td align='center';></td>");
+                    var userTd3 = $("<td>" + userName + "</td>");
+                    var userTd4 = $("<td>" + companyName + "</td>");
+                    var userTd5 = $("<td>" + roleName + "</td>");
+                    var userA = $("<a class= 'grid-btn2' onclick='deleteUserRole(this," + userId + " );return false;' style='margin-left: 5px; color: transparent; background-image: url(@Url.Content("~/Images/Icon/g-delete.png")) ;'  title='@ResourceHelper.GetValue("Common_Page_Delete")'></a>");
+                    userTd2.append(userA);
+                    userItemTr.append(userTd1);
+                    userItemTr.append(userTd3);
+                    userItemTr.append(userTd4);
+                    userItemTr.append(userTd5);
+                    userItemTr.append(userTd2);
+                    userItemsWrap.append(userItemTr);
+                }
+            } else {
+                if (currSelectIds.contain(userId)) {
+                    tempRemove.push(userId);
+                } else {
+                    tempAdd.remove(userId);
+                }
+
+                if (oldSelectIds.contain(userId)) {
+                    userItemsWrapRemove.push(userId);
+                } else {
+                    userItemsWrap.children("#" + userId).remove();
+                }
+            }
+        }
+
+
+
+        function pullUpUser(currRoleId) {
+            //showUserEditDialog();
+            var currUserIds = $("#AllSelectList").val();
+            ReSetData(currUserIds);
+            showModal("#normal-modal", "@ResourceHelper.GetValue("SM_RoleInfo_AddUser")", "@Url.Action("GetAllUserItem", "RoleInfo")?currRoleId=" + currRoleId + "&currUserIds=" + currUserIds);
+
+        }
+        function ReSetData(currUserIds) {
+            $("#currUserIds").val(currUserIds);
+            tempRemove = [];
+            tempAdd = [];
+            userItemsWrapRemove = [];
+            userItemsWrap.empty();
+        }
+
+        function CompareUserIds(allSelectList, primaryUserIds) {
+
+            var SelectIds = allSelectList.split(",");
+            var UserIds = primaryUserIds.split(",");
+            for (var i = 0; i < UserIds.length; i++) {
+                if (SelectIds.contain(UserIds[i]) == false) {
+                    tempdeleteUserIds.push(UserIds[i]);
+                }
+            }
+            $("#DeleteUserIds").val(tempdeleteUserIds.join(","));
+        }
+
+        function deleteUserRole(btn, Id) {
+            showLoadingBackground();
+            var confirmMsg = "@ResourceHelper.GetValue("Message_Common_ConfirmDelete")";
+            var currSelectIds = $("#currUserIds").val().split(",");
+            var msg;
+
+            msg = Messenger().post({
+                message: confirmMsg,
+                hideAfter: 0,
+                showCloseButton: true,
+                actions: {
+                    confirm: {
+                        label: '@ResourceHelper.GetValue("Common_Button_Sure")',
+                        action: function () {
+                            currSelectIds.remove(Id);
+                            $("#currUserIds").val(currSelectIds.join(","));
+                            $("#AllSelectList").val(currSelectIds.join(","));
+                            $(btn).parents("tr").remove();
+                            var userGrid = $(".grid");
+                            refreshGridCss(userGrid);
+                            hideLoading();
+                            return msg.cancel();
+                        }
+                    },
+                    cancel: {
+                        label: '@ResourceHelper.GetValue("Common_Button_Cancel")',
+                        action: function () {
+                            hideLoading();
+                            return msg.cancel();
+                        }
+                    }
+                }
+            });
+        }
+
+        function refreshGridCss(grid) {
+            var trs = grid.find("tr");
+            for (var i = 0; i < trs.length; i++) {
+                var tr = $(trs[i]);
+                tr.removeClass("gridrow").removeClass("gridrow_alternate");
+                if (i % 2 == 0) {
+                    tr.addClass("gridrow");
+                } else {
+                    tr.addClass("gridrow_alternate");
+                }
+            }
+        }
+
+        function searchUser() {
+            var currUserIds = $("#currUserIds").val();
+            var currRoleId = $("#currRole").val();
+            var $modal = $("#normal-modal");
+            var $body = $modal.find(".modal-body");
+            var $form = $("#form-search");
+            var currSelectIds = $("#currUserIds").val().split(",");
+
+            for (var i = 0; i < tempAdd.length; i++) {
+                currSelectIds.push(tempAdd[i]);
+            }
+            for (var i = 0; i < tempRemove.length; i++) {
+                currSelectIds.remove(tempRemove[i]);
+            }
+
+            currUserIds = currSelectIds.join(",");
+            $("#currUserIds").val(currUserIds);
+
+            var bool = true;
+            if (bool) {
+                $.ajax({
+                    url: $form.attr("action") + "?currUserIds=" + currUserIds + "&currRoleId=" + currRoleId,
+                    dataType: "html",
+                    data: $form.serialize(),
+                    type: "Post",
+                    beforeSend: showLoading(),
+                    success: function (result) {
+                        $body.html(result);
+                    },
+                    error: function (data) {
+                        buildError()
+                    },
+                    complete: function () {
+                        hideLoading()
+                    }
+                });
+            }
+
+            tempAdd = [];
+            tempRemove = [];
+        }
+
+        function reSetSearchUser() {
+            var clearBtn = $("#clearSearch");
+            var searchDiv = clearBtn.parents("#form-search");
+            var inputs = searchDiv.find("input");
+            for (var i = 0; i < inputs.length; i++) {
+                switch (inputs[i].type) {
+                    case "text":
+                        inputs[i].value = "";
+                        break;
+                    case "checkbox":
+                        inputs[i].checked = false;
+                        break;
+                    case "radio":
+                        inputs[i].checked = false;
+                        break;
+                }
+            }
+
+            //var currUserIds = $("#AllSelectList").val();
+            //var currRoleId = $("#currRole").val();
+            //var $modal = $("#normal-modal");
+            //var $body = $modal.find(".modal-body");
+            //var $form = $("#form-search");
+
+            //var bool = true;
+            //if (bool) {
+            //    $.ajax({
+            //        url: $form.attr("action") + "?currUserIds=" + currUserIds + "&currRoleId=" + currRoleId,
+            //        dataType: "html",
+            //        data: $form.serialize(),
+            //        type: "GET",
+            //        beforeSend: showLoading(),
+            //        success: function (result) {
+            //            $body.html(result);
+            //        },
+            //        error: function (data) {
+            //            buildError()
+            //        },
+            //        complete: function () {
+            //            hideLoading()
+            //        }
+            //    });
+            //}
+
+            //$("#currUserIds").val(currUserIds);
+            //tempAdd = [];
+            //tempRemove = [];
+            //userItemsWrapRemove = [];
+            //userItemsWrap.empty();
+            searchUser();
+        }
+
+    </script>
+    )

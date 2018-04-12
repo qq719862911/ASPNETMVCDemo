@@ -1,0 +1,112 @@
+﻿@using System.Web.UI.WebControls;
+@using MVC2015.Utility.Resource;
+@using MVC2015.Web.Site;
+
+@{
+    var guid = ViewBag.Guid;
+
+    DevexpressGridViewSettings gridSettings = new DevexpressGridViewSettings("gvFileUpload");
+    var settings = gridSettings.Settings();
+    settings.KeyFieldName = "FileId";
+    settings.CallbackRouteValues = new { Controller = "FileUpload", Action = "GridView"};
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "FileName";
+        column.Caption = ResourceHelper.GetValue("SM_FileUpload_FileName");
+        column.Width = Unit.Percentage(10);
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Left;
+
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Description";
+        column.Caption = ResourceHelper.GetValue("SM_FileUpload_Description");
+        column.Width = Unit.Percentage(30);
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Left;
+
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "FileSize";
+        column.Caption = ResourceHelper.GetValue("SM_FileUpload_FileSize");
+        column.Width = Unit.Percentage(10);
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Left;
+
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "FileId";
+        column.Settings.AutoFilterCondition = AutoFilterCondition.Equals;
+        column.Caption = ResourceHelper.GetValue("Common_PageList_Action");
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Width = Unit.Percentage(6);
+        column.Settings.AllowAutoFilter = DefaultBoolean.False;
+        column.Settings.AllowSort = DefaultBoolean.False;
+        column.SetDataItemTemplateContent(c =>
+        {
+            int Id = (int)DataBinder.Eval(c.DataItem, "FileId");
+            Guid fileGuid = (Guid)DataBinder.Eval(c.DataItem, "FileGuid");
+            
+            //下载
+            ViewContext.Writer.Write(
+            Html.ActionLink(" ", "", "", new { id = Id },
+                new
+                {
+                    //onclick = "downloadFile('" + fileGuid + "'); return false;",
+                    @class = "grid-btn2",
+                    @Href = Url.Action("FileDownload", "FileUpload") + "?guid=" + fileGuid,
+                    style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-down.png") + "');",
+                    title = ResourceHelper.GetValue("Common_Page_Down")
+                })
+            );
+            
+            //删除
+            ViewContext.Writer.Write(
+            Html.ActionLink(" ", "", "",new { id = Id },
+                new
+                {
+                    onclick = "deleteFile('" + Id + "'); return false;",
+                    @class = "grid-btn2",
+                    style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-delete.png") + "');",
+                    title = ResourceHelper.GetValue("Common_Page_Delete")
+                })
+            );
+
+        });
+    });
+
+    var gridView = Html.DevExpress().GridView(settings);
+
+}
+@gridView.BindToEF(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "FileId";
+}).GetHtml()
+
+@Html.ScriptBlock(
+@<script type="text/javascript">
+
+    @*function downloadFile(fileGuid) {
+        var url = "@Url.Action("FileDownload", "FileUpload")";
+        post(url, new { guid: fileGuid }, {});
+    }*@
+
+    function deleteFile(id) {
+        var url = "@Url.Action("DeleteFile", "FileUpload")" + "?id=" + id;
+        commonDelete("@ResourceHelper.GetValue("Message_Common_ConfirmDelete")", url, function (data) {
+            gvFileUpload.Refresh();
+            if (data == "true") {
+                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_DeleteSuccessful")");
+            } else {
+                Messenger.showError("@ResourceHelper.GetValue("Message_Common_DeleteFail")");
+            }
+        })
+    }
+
+    </script>
+)

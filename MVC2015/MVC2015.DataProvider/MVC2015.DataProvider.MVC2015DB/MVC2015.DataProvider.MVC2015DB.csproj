@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F91687A4-3AA5-42D5-8CD3-776495DFD31C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MVC2015.DataProvider.MVC2015DB</RootNamespace>
+    <AssemblyName>MVC2015.DataProvider.MVC2015DB</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Common\BaseContext.cs" />
+    <Compile Include="Common\BaseContextForSP.cs" />
+    <Compile Include="Common\SPBase.cs" />
+    <Compile Include="Contexts\MVC2015DBContext.cs" />
+    <Compile Include="Contexts\PermissionContext.cs" />
+    <Compile Include="Mapping\Common_Mail_BadMailMap.cs" />
+    <Compile Include="Mapping\Common_Mail_MailQueueMap.cs" />
+    <Compile Include="Mapping\ELMAH_ErrorMap.cs" />
+    <Compile Include="Mapping\tbl_AttachmentMap.cs" />
+    <Compile Include="Mapping\tbl_AuditLogMap.cs" />
+    <Compile Include="Mapping\tbl_Common_CustomerFieldMap.cs" />
+    <Compile Include="Mapping\tbl_Common_ModuleMap.cs" />
+    <Compile Include="Mapping\tbl_Common_ModulePermissionDefineMap.cs" />
+    <Compile Include="Mapping\tbl_Common_ResourceMap.cs" />
+    <Compile Include="Mapping\tbl_Common_RoleMap.cs" />
+    <Compile Include="Mapping\tbl_Common_RolePermissionConfigMap.cs" />
+    <Compile Include="Mapping\tbl_Common_RoleUserMap.cs" />
+    <Compile Include="Mapping\tbl_Common_UserMap.cs" />
+    <Compile Include="Mapping\tbl_Common_UserOfCompanyMap.cs" />
+    <Compile Include="Mapping\tbl_Common_UserOfGasStationMap.cs" />
+    <Compile Include="Mapping\tbl_CompanyMap.cs" />
+    <Compile Include="Mapping\tbl_EmailTemplateMap.cs" />
+    <Compile Include="Mapping\tbl_Job_HistoryDataMap.cs" />
+    <Compile Include="Mapping\tbl_Job_HistoryMap.cs" />
+    <Compile Include="Mapping\tbl_Job_MasterMap.cs" />
+    <Compile Include="Mapping\tbl_Job_StatusTypeMap.cs" />
+    <Compile Include="Mapping\tbl_SystemCodeMap.cs" />
+    <Compile Include="Mapping\tbl_SystemParameterMap.cs" />
+    <Compile Include="Mapping\tbl_TimerAllocLogMap.cs" />
+    <Compile Include="Mapping\tbl_TimerLogMap.cs" />
+    <Compile Include="Mapping\tbl_UserLogonHistoryMap.cs" />
+    <Compile Include="Mapping\tbl_WcfMap.cs" />
+    <Compile Include="Mapping\tbl_Wcf_StepDataMap.cs" />
+    <Compile Include="Mapping\tbl_Wcf_StepExceptionMap.cs" />
+    <Compile Include="Mapping\tbl_Wcf_StepMap.cs" />
+    <Compile Include="Mapping\tbl_Wcf_StepNameMap.cs" />
+    <Compile Include="Models\Common_Mail_BadMail.cs" />
+    <Compile Include="Models\Common_Mail_MailQueue.cs" />
+    <Compile Include="Models\ELMAH_Error.cs" />
+    <Compile Include="Mapping\tbl_Search_SearchInfoMap.cs" />
+    <Compile Include="Models\tbl_Attachment.cs" />
+    <Compile Include="Models\tbl_AuditLog.cs" />
+    <Compile Include="Models\tbl_Common_CustomerField.cs" />
+    <Compile Include="Models\tbl_Common_Module.cs" />
+    <Compile Include="Models\tbl_Common_ModulePermissionDefine.cs" />
+    <Compile Include="Models\tbl_Common_Resource.cs" />
+    <Compile Include="Models\tbl_Common_Role.cs" />
+    <Compile Include="Models\tbl_Common_RolePermissionConfig.cs" />
+    <Compile Include="Models\tbl_Common_RoleUser.cs" />
+    <Compile Include="Models\tbl_Common_User.cs" />
+    <Compile Include="Models\tbl_Common_UserOfCompany.cs" />
+    <Compile Include="Models\tbl_Common_UserOfGasStation.cs" />
+    <Compile Include="Models\tbl_Company.cs" />
+    <Compile Include="Models\tbl_EmailTemplate.cs" />
+    <Compile Include="Models\tbl_Job_History.cs" />
+    <Compile Include="Models\tbl_Job_HistoryData.cs" />
+    <Compile Include="Models\tbl_Job_Master.cs" />
+    <Compile Include="Models\tbl_Job_StatusType.cs" />
+    <Compile Include="Models\tbl_Search_SearchInfo.cs" />
+    <Compile Include="Models\tbl_SystemCode.cs" />
+    <Compile Include="Models\tbl_SystemParameter.cs" />
+    <Compile Include="Models\tbl_TimerAllocLog.cs" />
+    <Compile Include="Models\tbl_TimerLog.cs" />
+    <Compile Include="Models\tbl_UserLogonHistory.cs" />
+    <Compile Include="Models\tbl_Wcf.cs" />
+    <Compile Include="Models\tbl_Wcf_Step.cs" />
+    <Compile Include="Models\tbl_Wcf_StepData.cs" />
+    <Compile Include="Models\tbl_Wcf_StepException.cs" />
+    <Compile Include="Models\tbl_Wcf_StepName.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StoredProcedure\USP_UpdateDataUnitAndGasType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MVC2015.Utility\MVC2015.Utility.Common\MVC2015.Utility.Common.csproj">
+      <Project>{24715484-9c7f-45bd-b24c-1210bfdeb870}</Project>
+      <Name>MVC2015.Utility.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MVC2015.Utility\MVC2015.Utility.Mail\MVC2015.Utility.Mail.csproj">
+      <Project>{82a0fbc3-c87d-4759-97bc-dcd51908a7d3}</Project>
+      <Name>MVC2015.Utility.Mail</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

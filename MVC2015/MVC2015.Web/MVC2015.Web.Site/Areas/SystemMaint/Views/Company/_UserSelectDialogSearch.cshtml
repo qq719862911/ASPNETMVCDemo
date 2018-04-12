@@ -1,0 +1,40 @@
+﻿@using MVC2015.Web.Model.SystemMaint.UserInfo
+@using MVC2015.Web.Site.Common
+@using MVC2015.Utility.Resource
+@model UserInfoSearch
+
+<style type="text/css">
+
+</style>
+<div id="searchhead"class="row section-head">
+    <div id="searchtitle" class="section-title">
+        @ResourceHelper.GetValue("Common_SearchConditon")
+    </div>
+</div>
+<div class="titlemenu">
+    <input type="button" id="btnSearch" value="@ResourceHelper.GetValue("Common_Button_Search")" onclick="searchUser();" />
+    <input type="button" id="clearSearch" value="@ResourceHelper.GetValue("Common_Button_ReSet")" onclick="reSetSearchUser();" />
+</div>
+
+<div class="row field-row">
+    <div class="col-sm-2 field-title">
+        @ResourceHelper.GetValue("SM_UserInfo_LogonName"):
+    </div>
+    <div class="col-sm-3">
+        @Html.TextBoxFor(m => m.LogonName, new { @class = "field-input" })
+    </div>
+
+    <div class="col-sm-2 field-title">
+        @ResourceHelper.GetValue("SM_UserInfo_UserName"):
+    </div>
+    <div class="col-sm-3">
+        @Html.TextBoxFor(m => m.UserName, new { @class = "field-input" })
+    </div>
+</div>
+
+
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+
+    </script>
+)

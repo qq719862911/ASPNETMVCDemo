@@ -1,0 +1,71 @@
+﻿@using VM = MVC2015.Web.Model.SystemMaint.RoleInfo
+@using MVC2015.Web
+@using MVC2015.Web.Site.Common
+@using MVC2015.Web.Model
+@using MVC2015.Web.Model.KeyValue
+@using MVC2015.Utility.Resource;
+@model VM.RoleInfoItem
+
+<style type="text/css">
+    .modal-dialog {
+        width: 850px;
+        padding-top: 0;
+    }
+
+    .modal-body {
+        padding-top: 0;
+        overflow:auto;
+        padding-bottom: 20px !important;
+    }
+
+</style>
+
+
+
+<div style="max-height: 600px; max-width: 850px;word-break:break-all;">
+
+    <div class="row section-head">
+        <div class="section-title">
+            @ResourceHelper.GetValue("SM_RoleInfo_PageTitle")
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_RoleInfo_RoleName")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.Name
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_RoleInfo_RoleDescription"):
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.Description
+        </div>
+    </div>
+
+    <div class="row section-head">
+        <ul class="nav nav-tabs" role="tablist" style="padding-top:40px;">
+            <li class="active">
+                <a href="#tab_permission" data-toggle="tab">@ResourceHelper.GetValue("SM_RoleInfo_Permission")</a>
+            </li>
+        @if (PermissionHelper.CheckPermission("SystemMaint", "RoleInfo", "UserList"))
+        { 
+            <li class="">
+                <a href="#tab_userlist" data-toggle="tab">@ResourceHelper.GetValue("SM_RoleInfo_UserList")</a>
+            </li>
+        }
+        </ul>
+    </div>
+    <div class="tab-content">
+        <div id="tab_permission" class="tab-pane active">
+            @{Html.RenderAction("MoulePermissionRead", new { roleId = Model.RoleId });}
+        </div>
+        @if (PermissionHelper.CheckPermission("SystemMaint", "RoleInfo", "UserList"))
+        {
+            <div id="tab_userlist" class="tab-pane">
+                @{Html.RenderAction("UserListRead", new { roleId = Model.RoleId });}
+            </div>
+        }
+    </div>
+</div>

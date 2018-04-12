@@ -1,0 +1,27 @@
+﻿<div class="modal fade modal-mask" data-backdrop="static" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="form-modal-title"
+     aria-hidden="true">
+    <div class="modal-dialog modal-display">
+        <div class="modal-content div-sort dialog-custome-wrap">
+            <form></form>
+            <form action="*" method="post" id="modal-inner-form" data-event="{submit:'save'}">
+                <div class="row section-head">
+                    <div class="modal-title section-title custom-title">
+                        <h4 class="modal-title" style="color: white; font-weight: bold;">Form Modal</h4>
+                    </div>
+                </div>
+                <div class="titlemenu">
+                    @RenderSection("Buttons", false)
+
+                </div>
+                <div class="modal-body" id="form-modal-body" style="min-height: 120px;">
+                    <img class="loading" src="@Url.Content("~/Images/Main/loading.gif")" />
+                </div>
+                <div class="modal-footer" style="display: none">
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

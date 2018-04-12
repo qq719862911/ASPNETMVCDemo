@@ -1,0 +1,115 @@
+.diff .diff-left,
+.diff .diff-right {
+    display: table-cell;
+    padding-bottom: 10px;
+    min-width: 100px;
+}
+
+.diff ol,
+.beautify ol {
+    display: table-cell;
+    margin: 0px;
+    padding: 0px;
+}
+
+.diff li,
+.beautify li {
+    border-style: none none solid;
+    border-width: 0px 1px 1px;
+    display: block;
+    /*line-height: 1.2;*/
+    list-style-type: none;
+    margin: 0px;
+    padding-bottom: 0px;
+    padding-right: 0.5em;
+    border-color: #9F9F9F;
+}
+
+.diff .data li,
+.beautify .data li {
+    letter-spacing: 0.1em;
+    /*padding-left: 0.5em;*/
+    white-space: pre;
+}
+
+.replace {
+    background-color: #dda;    
+}
+
+.diff .data .replace em {
+    background-color: #440;
+    border-color: #220;
+    color: #cc9;
+    font-style: normal;
+    font-weight: bold;
+}
+
+.diff li em {
+    margin: 0px -.09em;
+    padding: 0.05em 0px;
+    font-style: normal;
+    font-weight: bold;
+}
+
+.diff {
+    max-height: 540px;
+    overflow: scroll;
+}
+
+.diff .empty {
+    background-color: #999;
+    border-color: #9F9F9F;
+}
+
+.diff .delete {
+    background-color: #300;
+    border-color: #9F9F9F;
+    color: #c66;
+}
+.diff .data .delete em {
+    background-color: #700;
+    border-color: #c66;
+    color: #f99;
+}
+
+.diff .insert {
+    background-color: #040;
+    border-color: #9F9F9F;
+    color: #6c6;
+}
+.diff .data .insert em {
+    background-color: #363;
+    border-color: #6c0;
+    color: #cfc;
+}
+
+.diff .count {
+background: #DCDCDC;
+color: #333;
+}
+
+.diff .count {
+border-style: solid;
+border-width: 0px 0.1em 0px 0px;
+font-weight: normal;
+padding: 0px;
+text-align: right;
+border-color: #9F9F9F;
+}
+
+.diff ol.data {
+    border-right: 1px solid #9F9F9F;
+}
+
+.diff h3.texttitle {
+    border: 1px solid #9F9F9F;
+    padding: 5px;
+}
+
+.diff .diff-right h3.texttitle {
+    border-left: 0;
+}
+
+.diff .diff-left ol.count {
+    border-left-width: 1px;
+}

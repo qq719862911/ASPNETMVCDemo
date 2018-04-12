@@ -1,0 +1,18 @@
+﻿@using MVC2015.Web.Common
+@using MVC2015.Web
+@using BL = MVC2015.Web.BusinessLogic;
+@using VM = MVC2015.Web.Model.Common;
+
+@{
+    MVC2015.Web.Model.Account.IdentityModel items = MVC2015.Web.Common.UserHelper.GetCurrentUser();
+    var pageTitle = MVC2015.Web.Common.PageTitle.GetCurGasStation(items.CurGasStationId);
+}
+@if (!string.IsNullOrEmpty(items.CurGasStationName))
+                {
+<div>
+    @*@pageTitle.Name (   @if (pageTitle.GasType == 1){<span>LNG</span>}
+                        @if (pageTitle.GasType == 2){<span>CNG</span>}                                                                                                             
+                        @if (pageTitle.GasType == 3){<span>L_CNG</span>} ) -- @pageTitle.Number*@
+    @pageTitle.Name (@pageTitle.MediumName) -- @pageTitle.Number
+</div>
+}

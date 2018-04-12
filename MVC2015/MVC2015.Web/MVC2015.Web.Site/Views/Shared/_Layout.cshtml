@@ -1,0 +1,48 @@
+﻿@using MVC2015.Web.Site.Common
+@using MVC2015.Web.Model
+@using MVC2015.Web.Model.Common
+@*@using MVC2015.Web.BusinessLogic.Common*@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="@Url.Content("~/favicon.ico")" />
+    <title>@ViewBag.Title - MVC2015</title>
+    @Html.Partial("_Head")
+</head>
+<body>
+    @*@{
+        var siteMenu = MVC2015.Web.Common.SiteMenu.GetSiteMenu();
+        if ( !Request.Url.AbsolutePath.Contains((Request.ApplicationPath == "/" ? null : Request.ApplicationPath) + "/Account/Login")||
+              Request.Url.AbsolutePath == (Request.ApplicationPath == "/" ? null : Request.ApplicationPath) + "/Account/Login/UserRest")
+            {           
+                     @Html.Partial("_NavBar", siteMenu)
+            }
+        }*@
+
+    <div class="row" style="height: 100%;">       
+        <div class="container body-content" id="container">
+            @RenderBody()
+            <div class="" style="padding-right: 20px">
+                &nbsp;
+            </div>
+        </div>
+
+    </div>
+    <div id="footer" class="navbar-fixed-bottom page-footer" style="height: 20px;">
+        @Html.Partial("_Footer")
+        <div class="right" style="padding-right: 10px">
+            &nbsp;
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+        @*@Scripts.Render("~/bundles/jquery")
+            @Scripts.Render("~/bundles/bootstrap")*@
+        @Html.Partial("_BPopout")
+        @RenderSection("scripts", required: false)
+        @Html.WriteScriptBlocks()
+</body>
+</html>

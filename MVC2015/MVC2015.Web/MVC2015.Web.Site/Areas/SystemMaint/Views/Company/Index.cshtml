@@ -1,0 +1,32 @@
+﻿@using MVC2015.Web;
+@using MVC2015.Utility.Resource
+@using MVC2015.Web.Site.Common;
+@model MVC2015.Web.Model.SystemMaint.Company.CompanyModel
+@{
+    ViewBag.Title = ResourceHelper.GetValue("SM_UserInfo_CompanyName");
+}
+
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_UserInfo_CompanyName")
+    </h2>
+</div>
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_Company", "Common_PageList")
+    </div>
+</div>
+<div class="row">
+    <div class="titlemenu">
+        @*@if (PermissionHelper.CheckPermission("SystemMaint", "Company", "Create"))
+        {*@
+            <input type="button" value="@ResourceHelper.GetValue("Common_Page_Add")" onclick="create()" />
+      @*  }*@
+    </div>
+</div>
+@Html.Action("GetList")
+<script type="text/javascript">
+    function create() {
+        location.href = "@Url.Action("Create","Company")";
+    }
+</script>

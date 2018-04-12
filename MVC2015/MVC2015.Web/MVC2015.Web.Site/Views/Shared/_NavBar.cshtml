@@ -1,0 +1,134 @@
+﻿@using MVC2015.Web.Common
+@using MVC2015.Web
+@using MVC2015.Utility.Resource
+@using BL = MVC2015.Web.BusinessLogic;
+
+@model List<MVC2015.Web.Model.Permission.SiteMenu>
+
+@{
+
+}
+<style type="text/css">
+    .nav navbar-nav Log {
+        color: #fff;
+        background-color: #3EB249;
+    }
+</style>
+<header id="navbarMenu" class="navbar  navbar-inverse navbar-fixed-top navbar-customer" role="navigation" style="z-index: 1000">
+    <div class="centercontent">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header" style="padding-left: 10px">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            @*        <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "", company = "" })" style="padding:1px 1px;">
+                    <img src="@Url.Content("~/Images/Main/Towngas_airwave.png")" alt="System Logo"  />
+                </a>*@
+            <table style="margin-top: 0px; height: 50px;">
+                <tr>
+                    <td style="padding: 0 1px;">
+
+                        <a class="navbar-brand" href="@Url.Action("GoToHome", "Home", new { area = "", company = "" })" style="padding:1px 1px;">
+                            <img src="@Url.Content("~/Images/Main/logo.gif")" style="height:48px; " alt="System Logo" />
+                        </a>
+
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="@Url.Action("GoToHome", "Home", new { area = "" })">ECO ROS</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav">
+                @{
+                    string userName = null;
+                    string gasStationName = null;
+                    int id = 0;
+                    try
+                    {
+                        var userInfo = UserHelper.GetCurrentUser();
+                        if (userInfo != null)
+                        {
+                            userName = userInfo.UserName;
+                            gasStationName = userInfo.CurGasStationName;
+                            id = Convert.ToInt32(userInfo.Id);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+                @*@if (userName != null)
+                    {
+                        <li><a href="@Url.Action("Index", "Home", new { area = "", company = "" })">@ResourceHelper.GetValue("Common_Menu_Home")</a></li>
+                    }*@
+
+                @if (Model != null)
+                {
+                    /*
+                    foreach (Towngas.Airwave.Model.Common.SiteMenu item in Model)
+                    {
+                        ViewData["MenuLevel"] = 0;
+                    @Html.Partial("_NavBarMenuNode", item, ViewData);
+                    }
+                    * */
+                    //BL.Common.PageTitle gas=new BL.Common.PageTitle();
+                    //var validate= gas.VaildateGas(id);
+                    //var IsGasStationSelected = !string.IsNullOrEmpty(gasStationName);
+                    @Html.Menu(Model.Where(s => s.MenuId != 10000).ToList())
+                }
+            </ul>
+
+            <ul class="nav navbar-nav">
+                @{
+                    var gasStationMap = GasStationMap.GetGasStationMap();
+                    if (gasStationMap.Count > 0)
+                    {
+                        <li><a href="@Url.Action("SelectGs", "Home", new { area = "" })">@ResourceHelper.GetValue("Common_Page_ChangeStation")</a></li>
+                    }
+                }
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                @if (userName != null)
+                {
+                    if (!string.IsNullOrEmpty(gasStationName))
+                    {
+
+                        <li><a class="navbar-gasStationName" style="cursor:default;" onclick="return false;">@ResourceHelper.GetValue("Common_Page_CurrentStation")@gasStationName</a></li>
+
+                    }
+                    <li><a href="@Url.Action("UserEdit", "UserInfo", new { area = "SystemMaint" })" title="@ResourceHelper.GetValue("Common_Page_Menu_UserNameTitle")">@userName</a></li>
+                    <li style="margin-right:10px;"><a onclick="signOut(); return false;">@ResourceHelper.GetValue("Common_Page_Sign_out")</a></li>
+                }
+            </ul>
+        </div>
+
+        <!-- /.navbar-collapse -->
+    </div>
+</header>
+
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        //forbid filter to support ie7";
+        $(document).ready(function () {
+            try {
+                $("#navbarMenu")[0].filters.item("DXImageTransform.Microsoft.gradient").Enabled = false;
+            } catch (e) {
+            }
+        });
+
+        function signOut() {
+            var url = "@Url.Action("SignOut", "Login", new { area = "Account" })"
+            commonDelete("@ResourceHelper.GetValue("Message_Common_ConfirmSignOut")?", url, function (message) {
+                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_SignOutSuccessful")", gotoUrl("@Url.Action("Index", "Home", new { area = "" })"));
+            });
+        }
+
+    </script>
+            )

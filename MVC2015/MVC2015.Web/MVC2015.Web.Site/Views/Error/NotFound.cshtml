@@ -1,0 +1,8 @@
+﻿@using MVC2015.Utility.Resource
+@{
+    ViewBag.Title = @ResourceHelper.GetValue("Common_ErrorPage_PageTitle");
+}
+
+<div class="title">
+    <h2 class="error">@ResourceHelper.GetValue("Common_ErrorPage_Content")</h2>
+</div>

@@ -1,0 +1,7 @@
+﻿@using MVC2015.Utility.Resource
+
+@{Layout = "~/Views/Shared/_FormTempModal.cshtml";}
+@section Buttons{
+    <input type="submit" id="btnSubmit" value="@ResourceHelper.GetValue("Common_Button_Sure")" aria-hidden="true" class="OuHide" />
+    <input type="button" data-dismiss="modal" aria-hidden="true" value="@ResourceHelper.GetValue("Common_Button_Cancel")" data-event="{click:'cancel'}" id="popout-cancel" />
+}

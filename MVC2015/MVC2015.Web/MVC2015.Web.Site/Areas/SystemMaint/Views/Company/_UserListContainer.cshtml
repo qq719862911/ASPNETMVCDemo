@@ -1,0 +1,13 @@
+﻿@using MVC2015.Web.Model;
+@using MVC2015.Web.Site.Common;
+@using MVC2015.Web;
+@using VM = MVC2015.Web.Model.SystemMaint.UserInfo;
+
+@model VM.UserInfoModel
+
+@Html.Partial("_UserSelectDialog", Model.List)
+@Html.Partial("_Pager", Model.Search)
+
+@Html.Hidden("SortBy", Model.Search.SortBy)
+@Html.Hidden("SortDirection", Model.Search.SortDirection)
+@Html.Hidden("PageNum", Model.Search.PageNum)

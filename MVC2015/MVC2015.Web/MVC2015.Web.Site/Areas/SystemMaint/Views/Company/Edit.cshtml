@@ -1,0 +1,127 @@
+﻿@using MVC2015.Web.Model.SystemMaint.Company
+@using MVC2015.Web.Site.Common
+@using MVC2015.Utility.Resource
+@*@using MVC2015.Resource*@
+@model CompanyModel
+@{
+    ViewBag.ShowSubmit = false;
+    ViewBag.ShowConfirm = true;
+    ViewBag.Title = ResourceHelper.GetValue("Common_Page_Edit", "SM_Company");
+    int currCompanyId = ViewBag.currCompanyId;
+    var hasViewUser = true;// PermissionHelper.CheckPermission("SystemMaint", "Company", "UserList");
+}
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("Common_Page_Edit", "SM_Company")
+    </h2>
+</div>
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_Company", "Common_Page_Detail")
+    </div>
+</div>
+@using (@Html.Form("Edit", "Company", FormMethod.Post, new { id = "companyEditForm" }))
+{
+    <div class="row">
+        <div class="titlemenu">
+            <input type="button" aria-hidden="true" id="btnSubmit" value="@ResourceHelper.GetValue("Common_Button_Save")" />
+            <a class="abtn" href="@Url.Action("index", "Company")">@ResourceHelper.GetValue("Common_Button_Return")</a>
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_Company_Name")：@Html.HiddenFor(m => m.ID)
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.Name, new { @class = "field-input" })
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_Company_Code")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.Code, new { @class = "field-input" })
+        </div>
+    </div>
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_Company_Description")：
+        </div>
+        <div class="col-md-5 field-content">
+            @Html.TextAreaFor(m => m.Description, new { @class = "field-input", rows = 2, cols = 100, maxlength = 200 })
+        </div>
+    </div>
+  
+    //if (PermissionHelper.CheckPermission("SystemMaint", "Company", "UserList"))
+    //{
+        <div class="row section-head">
+            <div class="section-title">
+                @ResourceHelper.GetValue("SM_Company_UserList")
+            </div>
+        </div>
+        @*Html.RenderAction("MoulePermission");*@
+        @Html.Action("userlist", new { UserItems = Model.List, companyId = Model.ID })
+   // }
+    <div class="row">
+        @Html.ValidationSummary()
+    </div>
+
+}
+@Html.Partial("_NormalModal")
+
+@Html.Hidden("HasViewUser", hasViewUser)
+@Html.Hidden("currCompanyId", currCompanyId)
+
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+        function gotourl(currCompanyId) {
+            gotoUrl("@Url.Action("Edit", "Company", new { area = "SystemMaint" })?Id=" + currCompanyId);
+        }
+
+        $(function () {
+            $('#btnSubmit').bind('click', function () {
+                var hasViewUser = $("#HasViewUser").val();
+                if (hasViewUser == "True") {
+                    var allSelectList = $("#AllSelectList").val();
+                    var currCompanyId = $("#currCompany").val();
+                    //var primaryUserIds = $("#PrimaryUserIds").val();
+                    //CompareUserIds(allSelectList, primaryUserIds);
+                    //var deleteUserIds = $("#DeleteUserIds").val();
+                } else {
+                    var allSelectList = "";
+                    var currCompanyId = $("#currCompanyId").val();
+                    //var deleteUserIds = "";
+                }
+                var $form = $("#companyEditForm");
+                var bool = $form.validate().form();
+                if (bool) {
+                    $.ajax({
+                        url: $form.attr("action") + "?allSelectList=" + allSelectList + "&currCompanyId=" + currCompanyId,
+                        dataType: "html",
+                        data: $form.serialize(),
+                        type: "POST",
+                        beforeSend: showLoading(),
+                        success: function (data) {
+
+                            if (data == "Success") {
+                                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_UpdateSuccessful")",
+                                    gotoUrl("@Url.Action("Index", "Company", new { area = "SystemMaint" })"));
+                            } else {
+                                //$("#companyEditForm").html(data);
+                                Messenger.showError(data);
+                            }
+                        },
+                        error: function (data) {
+                            buildError()
+                        },
+                        complete: function () {
+                            hideLoading()
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>)
+

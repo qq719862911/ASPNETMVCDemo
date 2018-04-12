@@ -1,0 +1,118 @@
+﻿@using System.Web.UI.WebControls;
+@using MVC2015.Web;
+@using MVC2015.Web.Model.Common;
+@using MVC2015.Web.Model;
+@using MVC2015.Utility.Resource;
+@using MVC2015.Web.Site.Common
+@{
+    string datetimeFormate = ViewBag.DisplayDate;
+    DevexpressGridViewSettings gridSettings = new DevexpressGridViewSettings("gvCompany");
+    var settings = gridSettings.Settings();
+    settings.KeyFieldName = "ID";
+    settings.CallbackRouteValues = new { Controller = "Company", Action = "GetList" };
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+    settings.SettingsBehavior.EnableRowHotTrack = true;
+
+    settings.Columns.Add("ID", ResourceHelper.GetValue("SM_Company_ID")).Width = Unit.Percentage(3);
+    settings.Columns.Add("Name", ResourceHelper.GetValue("SM_Company_Name")).Width = Unit.Percentage(10); ;
+    settings.Columns.Add("Code", ResourceHelper.GetValue("SM_Company_Code")).Width = Unit.Percentage(6);
+    //settings.Columns.Add("Description", ResourceHelper.GetValue("SM_Company_Description"));
+    //Description
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Description";
+        column.Caption = ResourceHelper.GetValue("SM_Company_Description");
+        column.Width = Unit.Percentage(10);
+        column.CellStyle.CssClass = "grid-list-over";
+    });
+    settings.HtmlDataCellPrepared = (s, e) =>
+    {
+            if (e.DataColumn.FieldName == "Description" && e.CellValue != null)
+                e.Cell.Attributes.Add("title", e.CellValue.ToString());
+    };
+
+    settings.Columns.Add("CreatedBy", ResourceHelper.GetValue("SM_Company_CreatedBy")).Width = Unit.Percentage(6);
+
+    //创建时间
+    MVCxGridViewColumn colTradeDate = new MVCxGridViewColumn();
+    colTradeDate.ColumnType = MVCxGridViewColumnType.DateEdit;
+    colTradeDate.PropertiesEdit.DisplayFormatString = datetimeFormate;
+    colTradeDate.FieldName = "CreatedDate";
+    colTradeDate.Caption = ResourceHelper.GetValue("SM_Company_CreatedDate");
+    colTradeDate.Width = Unit.Percentage(8);
+    colTradeDate.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    DateEditProperties requestDateStrprops = colTradeDate.PropertiesEdit as DateEditProperties;
+    requestDateStrprops.EditFormatString = datetimeFormate;
+    settings.Columns.Insert(5, colTradeDate);
+
+    //操作
+ //   bool hasEdit = PermissionHelper.CheckPermission("SystemMaint", "Company", "Edit");
+  //  bool hasDelete = PermissionHelper.CheckPermission("SystemMaint", "Company", "Delete");
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "ID";
+        column.Settings.AutoFilterCondition = AutoFilterCondition.Equals;
+        column.Caption = ResourceHelper.GetValue("Common_PageList_Action");
+        column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Width = Unit.Percentage(6);
+        column.Settings.AllowAutoFilter = DefaultBoolean.False;
+        column.Settings.AllowSort = DefaultBoolean.False;
+        column.SetDataItemTemplateContent(c =>
+        {
+            int Id = (int)DataBinder.Eval(c.DataItem, "ID");
+            string Name = (string)DataBinder.Eval(c.DataItem, "Name");
+            if (true)
+            {
+                ViewContext.Writer.Write(
+                    Html.ActionLink(" ", "", "",
+                    new
+                    {
+                        id = Id
+                    },
+                    new { onclick = "showEditDialog('" + Id + "'); return false;", @class = "grid-btn2", style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-edit.png") + "');", title = ResourceHelper.GetValue("Common_Page_Edit") })
+                 );
+            }
+            if (true)
+            {
+                ViewContext.Writer.Write(
+                Html.ActionLink(" ", "", "",
+                new
+                {
+                    id = Id
+                },
+                new { onclick = "deleteCompany('" + Id + "','" + Html.Encode(Name) + "');return false;", @class = "grid-btn2", style = "margin-left:5px;color: transparent;background-image:url('" + Url.Content("~/Images/Icon/g-delete.png") + "');", title = ResourceHelper.GetValue("Common_Page_Delete") })
+                 );
+            }
+        });
+    });
+    var grid = Html.DevExpress().GridView(settings);
+}
+@grid.BindToEF(string.Empty, string.Empty, (s, e) =>
+{
+    e.QueryableSource = Model;
+    e.KeyExpression = "ID";
+    e.DefaultSorting = "ID ASC";
+}).GetHtml()
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+
+        function deleteCompany(Id, name) {
+            var url = "@Url.Action("Delete", "Company")/" + Id;
+            commonDelete("@ResourceHelper.GetValue("Message_Common_ConfirmDeletion")".replace("{0}", "\"" + name + "\""), url, function (message) {
+                if (message == "False") {
+                    Messenger.showError("@ResourceHelper.GetValue("SM_Company_HasBeenUse")");
+                } else if (message == "HasUser") {
+                    Messenger.showError("@ResourceHelper.GetValue("SM_Company_HasUser")");
+                } else {
+                    gvCompany.Refresh();
+                    Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_DeleteSuccessful")");
+                }
+            });
+        }
+        function showEditDialog(id) {
+            location.href = "@Url.Action("Edit","Company")?id=" + id;
+        }
+    </script>
+
+                                                    )

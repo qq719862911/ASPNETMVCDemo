@@ -1,0 +1,9 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@using MVC2015.Utility.Resource
+@{
+    ViewBag.Title = @ResourceHelper.GetValue("Common_NoPermissionsPage_PageTitle");
+}
+
+<div class="title">
+    <h2 class="error">@ResourceHelper.GetValue("Common_NoPermissionsPage_Content")</h2>
+</div>

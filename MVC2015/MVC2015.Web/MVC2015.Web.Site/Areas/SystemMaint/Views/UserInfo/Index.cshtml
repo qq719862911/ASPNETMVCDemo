@@ -1,0 +1,72 @@
+﻿@using MVC2015.Web
+@using MVC2015.Web.Model.SystemMaint.UserInfo
+@using MVC2015.Utility.Resource
+@using MVC2015.Web.Site.Common
+@model  UserInfoModel
+@{
+    ViewBag.Title = @ResourceHelper.GetValue("SM_UserInfo_Title");
+}
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_UserInfo_Page_Title")
+    </h2>
+</div>
+
+<div style="display: none;" data-element="data-userInfo">
+    <span data-url="fresh-@Url.Action("Index", "UserInfo")"></span>
+    <span data-url="create-@Url.Action("Create", "UserInfo")"></span>
+    <span data-url="update-@Url.Action("Edit", "UserInfo")"></span>
+</div>
+
+<!-- search -->
+<div class="row" data-element="search-userInfo">
+    @using (Html.Form("Index", "UserInfo", FormMethod.Get, new { @id = "form-search" }))
+    {
+        @Html.Partial("Search", Model.Search)
+    }
+</div>
+@*<hr />*@
+
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_UserInfo", "Common_PageList")
+    </div>    
+</div>
+<div class="titlemenu " data-element="buttons-userInfo">
+    <div class="row field-row">
+        <input type="button" name="Second" style="right: 0px;position: absolute;display:none;" class="export" value="@ResourceHelper.GetValue("Common_Page_export")" />
+        @*@if (PermissionHelper.CheckPermission("SystemMaint", "UserInfo", "Create"))
+        {*@
+            <a href="@Url.Action("Create", "UserInfo", new {id = -1 })" class="abtn">@ResourceHelper.GetValue("Common_Page_Add")</a>
+      @*  }*@
+    </div>
+</div>
+
+<div class="row" id="userInfo-container" data-element="grid-userInfo">
+    @*@Html.Partial("_ListContainer", Model)*@
+    <script>
+        //for DevExpress, post form data
+        function OnBeginCallback(s, e) {
+            var searchElement = $("[data-element^=search]");
+            var identity = searchElement.attr("data-element").split("-")[1];
+            var $searchForm = $("[data-element=search-" + identity + "] form");
+            var preSearchVal = $searchForm.serializeArray();
+            var jsonStr = {};
+            $.each(preSearchVal, function () {
+                jsonStr[this.name] = this.value;
+            });
+            e.customArgs["searchModel"] = JSON.stringify(jsonStr);
+        }
+    </script>
+    <div data-element="grid-userInfo">
+        @Html.Partial("_List", Model.List)
+    </div>
+</div>
+
+@Html.Partial("_NormalModal")
+<div data-element="popout-userInfo">
+    @Html.Partial("_FormModal")
+</div>
+<div data-element="popout-userInfoEditForm">
+    @Html.Partial("_EditFormModel")
+</div>

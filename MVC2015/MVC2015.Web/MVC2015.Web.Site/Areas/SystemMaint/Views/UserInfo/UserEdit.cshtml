@@ -1,0 +1,118 @@
+﻿@using MVC2015.Web.Model.SystemMaint.UserInfo
+@using MVC2015.Web.Site.Common
+@using MVC2015.Utility.Resource
+@model UserInfoItem
+@{
+    ViewBag.ShowSubmit = true;
+    ViewBag.Title = ResourceHelper.GetValue("SM_UserInfo_PersonInfo");
+}
+
+<div class="row page-title" style=" text-align:left">
+    <h2>
+        @ResourceHelper.GetValue("SM_UserInfo_PersonInfo")
+    </h2>
+</div>
+
+<div class="row section-head">
+    <div class="section-title">
+        @ResourceHelper.GetValue("SM_UserInfo_BasicInfo")
+    </div>
+</div>
+<div class="titlemenu">
+    <input type="button" value="@ResourceHelper.GetValue("Common_Button_Save")" id="btnSave" />
+    <a href="@Url.Action("UpdatePassword", "UserInfo")" class="abtn">@ResourceHelper.GetValue("Common_Button_UpdatePassWord")</a>
+</div>
+@using (@Html.Form("UserEdit", "UserInfo", new { UserId = Model.UserId }, FormMethod.Post, new { id = "editUserForm" }))
+{
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_LogonName")：@Html.HiddenFor(m => m.UserId)
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.LogonName
+        </div>
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_UserInfo_UserName")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "field-input" })
+        </div>
+    </div>
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_RoleName")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.RoleName
+        </div>
+        <div class="col-md-3 field-title">
+            @ResourceHelper.GetValue("SM_UserInfo_DomainAccount")：
+        </div>
+        <div class="col-md-3 field-content">
+            @Model.DomainAccount
+        </div>
+    </div>
+
+    <div class="row field-row">
+        <div class="col-md-3 field-title">
+            <span style="color:red">*</span>@ResourceHelper.GetValue("SM_UserInfo_EmailAddress") (Email)：
+        </div>
+        <div class="col-md-3 field-content">
+            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "field-input" })
+        </div>
+    </div>
+
+    @*<div class="row section-head">
+            <div class="section-title">
+                @ResourceHelper.GetValue("SM_UserInfo_Station")
+            </div>
+        </div>
+        <div class="row field-row">
+            <div class="col-md-3 field-title">
+                @ResourceHelper.GetValue("SM_UserInfo_Station")：
+            </div>
+            <div class="col-md-7 field-content">
+                @Model.UserGasStationName
+            </div>
+        </div>*@
+    <div class="row">
+        @Html.ValidationSummary()
+    </div>
+}
+@Html.ScriptBlock(
+    @<script type="text/javascript">
+
+        $(function () {
+            $('#btnSave').bind('click', function () {
+                var $form = $("#editUserForm");
+                var bool = $form.validate().form();
+                if (bool) {
+                    $.ajax({
+                        url: $form.attr("action"),
+                        dataType: "html",
+                        data: $form.serialize(),
+                        type: "POST",
+                        beforeSend: showLoading(),
+                        success: function (data) {
+                            if (data == "Success") {
+
+                                Messenger.showSuccess("@ResourceHelper.GetValue("Message_Common_UpdatedSuccessful")",gotoUrl("/SystemMaint/UserInfo/UserEdit"));
+                                
+                            } else {
+                                Messenger.showError(data);
+                            }
+                        },
+                        error: function () {
+                            buildError()
+                        },
+                        complete: function () {
+                            hideLoading()
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+                                )
